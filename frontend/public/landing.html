@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Patherle — WhatsApp AI that speaks your language</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #0A0F0C;
+      color: #EDE8DC;
+      overflow-x: hidden;
+    }
+
+    :root {
+      --ink:     #0A0F0C;
+      --forest:  #162019;
+      --cream:   #EDE8DC;
+      --lav:     #C9BAEE;
+      --mint:    #25D366;
+      --orange:  #FF6B2B;
+      --yellow:  #F5E53B;
+    }
+
+    /* ── Grain overlay ── */
+    #grain {
+      position: fixed; inset: 0; pointer-events: none; z-index: 9999;
+      opacity: .045;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+    }
+
+    /* ── Scroll reveal ── */
+    .reveal       { opacity:0; transform:translateY(44px);  transition:opacity .75s ease,transform .75s ease; }
+    .reveal-l     { opacity:0; transform:translateX(-44px); transition:opacity .75s ease,transform .75s ease; }
+    .reveal-r     { opacity:0; transform:translateX(44px);  transition:opacity .75s ease,transform .75s ease; }
+    .reveal.on, .reveal-l.on, .reveal-r.on { opacity:1; transform:translate(0); }
+
+    /* ── Nav ── */
+    nav {
+      position:fixed; top:0; left:0; right:0; z-index:200;
+      padding:1.25rem 2.5rem;
+      display:flex; align-items:center; justify-content:space-between;
+      transition:background .3s,backdrop-filter .3s;
+    }
+    nav.stuck {
+      background:rgba(10,15,12,.85);
+      backdrop-filter:blur(16px);
+      border-bottom:1px solid rgba(237,232,220,.07);
+    }
+    .nav-logo {
+      font-family:'Fraunces',serif; font-style:italic; font-weight:800;
+      font-size:1.5rem; color:var(--cream); text-decoration:none; letter-spacing:-.02em;
+    }
+    .nav-logo em { color:var(--mint); font-style:normal; }
+    .nav-links { display:flex; align-items:center; gap:2rem; list-style:none; }
+    .nav-links a {
+      color:rgba(237,232,220,.6); text-decoration:none;
+      font-size:.875rem; font-weight:500; transition:color .2s;
+    }
+    .nav-links a:hover { color:var(--cream); }
+    .nav-cta {
+      background:var(--mint); color:#000 !important; padding:.55rem 1.2rem;
+      border-radius:100px; font-weight:700 !important;
+      transition:transform .2s,box-shadow .2s !important;
+    }
+    .nav-cta:hover {
+      transform:translateY(-2px);
+      box-shadow:0 6px 20px rgba(37,211,102,.35) !important;
+    }
+
+    /* ─────────────── HERO ─────────────── */
+    #hero {
+      min-height:100vh; background:var(--ink);
+      display:grid; grid-template-columns:1fr 1fr;
+      align-items:center; gap:3rem;
+      padding:8rem 4rem 5rem;
+      position:relative; overflow:hidden;
+    }
+    .hero-blob {
+      position:absolute; border-radius:50%; filter:blur(90px); pointer-events:none;
+    }
+    .hero-blob-1 { width:700px;height:700px;background:rgba(22,32,25,.9);top:-250px;left:-250px; }
+    .hero-blob-2 { width:500px;height:500px;background:rgba(37,211,102,.12);bottom:-200px;right:50px; }
+    .hero-blob-3 { width:350px;height:350px;background:rgba(201,186,238,.08);top:100px;right:250px; }
+
+    .hero-left { position:relative; z-index:1; }
+
+    .hero-pill {
+      display:inline-flex; align-items:center; gap:.5rem;
+      background:rgba(37,211,102,.1); border:1px solid rgba(37,211,102,.25);
+      color:var(--mint); padding:.35rem .9rem; border-radius:100px;
+      font-size:.78rem; font-weight:600; margin-bottom:1.75rem;
+      animation:slideUp .6s ease both;
+    }
+    .pulse-dot {
+      width:6px;height:6px;background:var(--mint);border-radius:50%;
+      animation:pulseDot 1.8s infinite;
+    }
+    @keyframes pulseDot { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.4)} }
+
+    .hero-h1 {
+      font-family:'Fraunces',serif; font-style:italic; font-weight:900;
+      font-size:clamp(3.2rem,5.5vw,5.75rem); line-height:.97; letter-spacing:-.04em;
+      color:var(--cream); margin-bottom:1.5rem;
+      animation:slideUp .8s ease .1s both;
+    }
+    .hero-h1 .c-mint   { color:var(--mint); }
+    .hero-h1 .c-lav    { color:var(--lav); }
+    .hero-h1 .c-orange { color:var(--orange); }
+
+    .hero-sub {
+      font-size:1.05rem; color:rgba(237,232,220,.6);
+      line-height:1.65; max-width:460px; margin-bottom:2.5rem;
+      animation:slideUp .8s ease .22s both;
+    }
+
+    .hero-ctas {
+      display:flex; align-items:center; gap:.875rem;
+      margin-bottom:2.75rem; flex-wrap:wrap;
+      animation:slideUp .8s ease .33s both;
+    }
+    .btn-main {
+      background:var(--cream); color:var(--ink);
+      padding:.875rem 2rem; border-radius:100px; font-weight:700;
+      font-size:1rem; text-decoration:none; border:2px solid var(--cream);
+      display:inline-flex; align-items:center; gap:.4rem;
+      transition:all .22s;
+    }
+    .btn-main:hover { background:transparent; color:var(--cream); transform:translateY(-2px); }
+    .btn-outline {
+      color:var(--cream); padding:.875rem 1.5rem; border-radius:100px;
+      font-weight:500; font-size:1rem; text-decoration:none;
+      border:2px solid rgba(237,232,220,.18); display:inline-flex;
+      align-items:center; gap:.4rem; transition:all .22s;
+    }
+    .btn-outline:hover { border-color:var(--cream); transform:translateY(-2px); }
+
+    .hero-trust { display:flex; align-items:center; gap:1rem; animation:slideUp .8s ease .44s both; }
+    .avatars { display:flex; }
+    .av {
+      width:30px;height:30px;border-radius:50%;border:2px solid var(--ink);
+      margin-left:-8px; font-size:.6rem; font-weight:700;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .av:first-child { margin-left:0; }
+    .trust-txt { font-size:.82rem; color:rgba(237,232,220,.5); }
+    .trust-txt strong { color:var(--cream); }
+
+    @keyframes slideUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:translateY(0)} }
+
+    /* ── Phone mockup ── */
+    .hero-right {
+      display:flex; justify-content:center; align-items:center;
+      position:relative; z-index:1;
+    }
+    .phone-stage {
+      position:relative;
+      animation:floatPhone 4.5s ease-in-out infinite;
+    }
+    @keyframes floatPhone {
+      0%,100% { transform:translateY(0) rotate(-1.5deg); }
+      50%      { transform:translateY(-16px) rotate(-1.5deg); }
+    }
+    .phone-glow {
+      position:absolute; inset:-60px;
+      background:radial-gradient(ellipse,rgba(37,211,102,.18) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .phone {
+      width:270px; background:#1C1C2E;
+      border-radius:38px; padding:11px;
+      border:2px solid rgba(255,255,255,.08);
+      box-shadow:0 50px 100px rgba(0,0,0,.65),0 0 0 1px rgba(255,255,255,.04);
+    }
+    .phone-notch {
+      width:72px;height:5px;background:#111;border-radius:3px;margin:0 auto 10px;
+    }
+    .phone-screen { background:#ECE5DD; border-radius:26px; overflow:hidden; }
+    .chat-hdr {
+      background:#075E54; padding:10px 14px;
+      display:flex; align-items:center; gap:9px;
+    }
+    .chat-ava {
+      width:34px;height:34px;border-radius:50%;
+      background:linear-gradient(135deg,#25D366,#128C7E);
+      display:flex;align-items:center;justify-content:center;
+      font-size:.65rem;font-weight:700;color:#fff;flex-shrink:0;
+    }
+    .chat-nm { font-size:.82rem;font-weight:600;color:#fff; }
+    .chat-st { font-size:.6rem;color:rgba(255,255,255,.65); }
+    .chat-body {
+      padding:10px 8px; display:flex; flex-direction:column;
+      gap:5px; min-height:280px;
+      background:#ECE5DD url("data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='20' cy='20' r='.8' fill='%23bbb' opacity='.25'/%3E%3C/svg%3E");
+    }
+    .msg {
+      max-width:78%; padding:6px 10px; border-radius:8px;
+      font-size:.7rem; line-height:1.35;
+      font-family:'DM Sans',sans-serif;
+    }
+    .msg.in  { background:#fff;align-self:flex-start;border-top-left-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,.1);color:#333; }
+    .msg.out { background:#DCF8C6;align-self:flex-end;border-top-right-radius:2px;box-shadow:0 1px 2px rgba(0,0,0,.1);color:#333; }
+    .msg .tag { display:block;font-size:.5rem;text-transform:uppercase;letter-spacing:.05em;opacity:.45;margin-bottom:2px; }
+    .typing-wrap { background:#fff;align-self:flex-start;padding:7px 10px;border-radius:8px;border-top-left-radius:2px;display:flex;gap:3px;align-items:center; }
+    .td { width:5px;height:5px;background:#aaa;border-radius:50%;animation:tdBounce 1.1s infinite; }
+    .td:nth-child(2){animation-delay:.18s} .td:nth-child(3){animation-delay:.36s}
+    @keyframes tdBounce { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-4px)} }
+
+    /* ─────────────── MARQUEE ─────────────── */
+    .marquee-wrap {
+      background:var(--cream); border-top:2.5px solid #000; border-bottom:2.5px solid #000;
+      padding:.9rem 0; overflow:hidden;
+    }
+    .marquee-track {
+      display:flex; white-space:nowrap;
+      animation:marqueeAnim 28s linear infinite;
+    }
+    .marquee-wrap:hover .marquee-track { animation-play-state:paused; }
+    .mi {
+      display:inline-flex; align-items:center; gap:.75rem;
+      padding:0 1.5rem; font-weight:700; font-size:.82rem;
+      color:#000; text-transform:uppercase; letter-spacing:.06em;
+    }
+    .mi-dot { width:5px;height:5px;background:var(--mint);border-radius:50%;flex-shrink:0; }
+    @keyframes marqueeAnim { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* ─────────────── PROBLEM ─────────────── */
+    #problem {
+      background:var(--cream); color:var(--ink);
+      padding:9rem 4rem;
+    }
+    .sec-label {
+      display:inline-block; font-size:.72rem; font-weight:700;
+      text-transform:uppercase; letter-spacing:.12em; opacity:.4; margin-bottom:1.25rem;
+    }
+    .sec-h {
+      font-family:'Fraunces',serif; font-style:italic; font-weight:900;
+      font-size:clamp(2.75rem,5vw,4.75rem); line-height:1.0; letter-spacing:-.035em;
+      margin-bottom:1rem;
+    }
+    .sec-sub { font-size:1.05rem; opacity:.55; max-width:540px; line-height:1.65; margin-bottom:4rem; }
+
+    .p-cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; }
+    .p-card {
+      background:var(--cream); border:2.5px solid var(--ink); border-radius:18px;
+      padding:2.25rem; box-shadow:6px 6px 0 #000;
+      transition:transform .22s,box-shadow .22s;
+    }
+    .p-card:hover { transform:translate(-4px,-4px); box-shadow:10px 10px 0 #000; }
+    .p-emoji { font-size:2.25rem; margin-bottom:1rem; display:block; }
+    .p-stat {
+      font-family:'Fraunces',serif; font-size:3rem; font-weight:900;
+      line-height:1; margin-bottom:.5rem; letter-spacing:-.03em;
+    }
+    .p-stat small { font-family:'DM Sans',sans-serif; font-size:.8rem; font-weight:400; opacity:.5; display:block; margin-top:.1rem; }
+    .p-title { font-family:'Fraunces',serif; font-style:italic; font-size:1.45rem; font-weight:700; margin-bottom:.5rem; }
+    .p-desc  { font-size:.875rem; opacity:.6; line-height:1.65; }
+
+    /* ─────────────── HOW IT WORKS ─────────────── */
+    #how {
+      background:var(--ink); padding:9rem 4rem;
+      position:relative; overflow:hidden;
+    }
+    #how .sec-label { color:rgba(237,232,220,.35); }
+    #how .sec-h     { color:var(--cream); }
+    #how .sec-sub   { color:rgba(237,232,220,.5); }
+
+    .how-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:2.5rem;
+      margin-top:4.5rem; position:relative;
+    }
+    .how-line {
+      position:absolute; top:52px; left:calc(16.66% + 24px); right:calc(16.66% + 24px);
+      height:1px;
+      background:linear-gradient(90deg,transparent,var(--lav) 30%,var(--mint) 70%,transparent);
+      z-index:0;
+    }
+    .how-step { position:relative; z-index:1; }
+    .how-num {
+      font-family:'Fraunces',serif; font-style:italic; font-size:5.5rem;
+      font-weight:900; line-height:1; margin-bottom:1.25rem;
+      background:linear-gradient(180deg,var(--cream),rgba(237,232,220,.15));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .how-icon {
+      width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
+      justify-content:center;font-size:1.6rem;margin-bottom:1.25rem;
+      border:1.5px solid rgba(237,232,220,.1);
+    }
+    .how-title { font-family:'Fraunces',serif;font-style:italic;font-size:1.4rem;font-weight:700;color:var(--cream);margin-bottom:.625rem; }
+    .how-desc  { font-size:.875rem;color:rgba(237,232,220,.5);line-height:1.7; }
+
+    /* ─────────────── FEATURES BENTO ─────────────── */
+    #features {
+      background:#060B08; padding:9rem 4rem;
+      position:relative; overflow:hidden;
+    }
+    #features .sec-label { color:rgba(237,232,220,.3); }
+    #features .sec-h     { color:var(--cream); }
+    #features .sec-sub   { color:rgba(237,232,220,.45); }
+
+    .bento { display:grid; grid-template-columns:repeat(3,1fr); gap:.875rem; margin-top:3.5rem; }
+    .bc {
+      background:rgba(22,32,25,.55); backdrop-filter:blur(24px);
+      border:1px solid rgba(237,232,220,.07); border-radius:22px;
+      padding:2rem; position:relative; overflow:hidden;
+      transition:border-color .3s,transform .3s;
+    }
+    .bc::after {
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(circle at top left,rgba(201,186,238,.05),transparent 55%);
+      pointer-events:none;
+    }
+    .bc:hover { border-color:rgba(237,232,220,.18); transform:translateY(-5px); }
+    .bc.span2 { grid-column:span 2; }
+    .bc-icon  { font-size:2rem;margin-bottom:1rem;display:block; }
+    .bc-title { font-family:'Fraunces',serif;font-style:italic;font-size:1.3rem;font-weight:700;color:var(--cream);margin-bottom:.5rem; }
+    .bc-desc  { font-size:.85rem;color:rgba(237,232,220,.48);line-height:1.65; }
+    .bc-tag {
+      display:inline-block;margin-top:1rem;
+      background:rgba(37,211,102,.1);color:var(--mint);
+      padding:.2rem .7rem;border-radius:100px;font-size:.72rem;font-weight:600;
+      border:1px solid rgba(37,211,102,.18);
+    }
+    /* bento visual flourishes */
+    .bc-visual {
+      margin-top:1.5rem; display:flex; gap:.5rem; flex-wrap:wrap;
+    }
+    .bc-lang-chip {
+      padding:.3rem .75rem;border-radius:100px;font-size:.75rem;font-weight:600;
+      border:1px solid rgba(237,232,220,.12);color:rgba(237,232,220,.6);
+    }
+    .bc-bar-wrap { margin-top:1.25rem; display:flex;flex-direction:column;gap:.5rem; }
+    .bc-bar-row  { display:flex;align-items:center;gap:.75rem;font-size:.75rem;color:rgba(237,232,220,.5); }
+    .bc-bar-track { flex:1;height:4px;background:rgba(237,232,220,.07);border-radius:2px; }
+    .bc-bar-fill  { height:4px;border-radius:2px;background:var(--mint); }
+
+    /* ─────────────── LANGUAGE SHOWCASE ─────────────── */
+    #languages {
+      background:var(--cream); color:var(--ink); padding:9rem 4rem;
+    }
+    .lang-layout { display:grid;grid-template-columns:1fr 1fr;gap:6rem;align-items:center;margin-top:4rem; }
+
+    .lang-tabs {
+      display:flex;gap:0;border:2.5px solid var(--ink);border-radius:100px;
+      overflow:hidden;width:fit-content;margin-bottom:1.75rem;
+    }
+    .lang-tab {
+      padding:.55rem 1.5rem;font-weight:600;font-size:.875rem;
+      border:none;background:transparent;cursor:pointer;
+      transition:all .18s;color:var(--ink);
+    }
+    .lang-tab.active { background:var(--ink);color:var(--cream); }
+    .lang-tab:not(.active):hover { background:rgba(13,20,16,.06); }
+
+    .lang-card { display:none; }
+    .lang-card.active { display:block;animation:cardIn .3s ease; }
+    @keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+
+    .lc-inner {
+      background:var(--ink); color:var(--cream);
+      border-radius:22px;padding:2rem;border:2.5px solid var(--ink);
+    }
+    .lc-q  { font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:.5rem; }
+    .lc-msg{
+      background:rgba(237,232,220,.09);border-radius:12px;
+      padding:.875rem 1.125rem;font-size:.95rem;margin-bottom:1.25rem;line-height:1.5;
+    }
+    .lc-a  { font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;opacity:.4;margin-bottom:.5rem; }
+    .lc-ans{
+      background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);
+      border-radius:12px;padding:.875rem 1.125rem;font-size:.95rem;line-height:1.55;
+    }
+
+    .lang-stats { display:grid;grid-template-columns:1fr 1fr;gap:1.25rem; }
+    .ls {
+      border:2.5px solid var(--ink);border-radius:16px;
+      padding:1.5rem;box-shadow:4px 4px 0 var(--ink);
+    }
+    .ls-n { font-family:'Fraunces',serif;font-size:2.75rem;font-weight:900;line-height:1; }
+    .ls-l { font-size:.78rem;opacity:.55;margin-top:.2rem; }
+
+    /* ─────────────── PRICING ─────────────── */
+    #pricing {
+      background:var(--forest); padding:9rem 4rem;
+    }
+    #pricing .sec-label { color:rgba(237,232,220,.35); }
+    #pricing .sec-h     { color:var(--cream); }
+    #pricing .sec-sub   { color:rgba(237,232,220,.5); }
+
+    .price-grid { display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:4rem; }
+    .pc {
+      border-radius:22px;padding:2.5rem;
+      position:relative;transition:transform .28s;
+    }
+    .pc:hover { transform:translateY(-7px); }
+
+    .pc.s1 { background:rgba(237,232,220,.04);border:1.5px solid rgba(237,232,220,.09); }
+    .pc.s2 { background:var(--cream);color:var(--ink);border:2.5px solid var(--cream);box-shadow:0 0 0 5px rgba(237,232,220,.08); }
+    .pc.s3 { background:rgba(201,186,238,.07);border:1.5px solid rgba(201,186,238,.18); }
+
+    .pc-pop {
+      display:inline-block;background:var(--mint);color:#000;
+      font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;
+      padding:.2rem .75rem;border-radius:100px;margin-bottom:1.25rem;
+    }
+    .pc-tier  { font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;opacity:.45;margin-bottom:.4rem; }
+    .pc-price {
+      font-family:'Fraunces',serif;font-size:3.75rem;font-weight:900;
+      line-height:1;margin-bottom:.2rem;
+    }
+    .pc-price sub { font-size:1.2rem;opacity:.55; }
+    .pc-period { font-size:.82rem;opacity:.4;margin-bottom:2rem; }
+
+    .pc-list { list-style:none;display:flex;flex-direction:column;gap:.7rem;margin-bottom:2.5rem; }
+    .pc-list li { font-size:.88rem;display:flex;align-items:center;gap:.6rem; }
+    .pc-list li::before { content:'✓';font-weight:800;color:var(--mint);flex-shrink:0; }
+
+    .pc.s2 .pc-tier,.pc.s2 .pc-period { color:var(--ink); }
+    .pc.s2 .pc-list li { color:var(--ink); }
+    .pc.s2 .pc-list li::before { color:#128C7E; }
+
+    .pc.s3 .pc-list li { color:rgba(237,232,220,.7); }
+    .pc.s3 .pc-list li::before { color:var(--lav); }
+
+    .pc-btn {
+      display:block;text-align:center;padding:.875rem;border-radius:100px;
+      font-weight:700;font-size:.95rem;text-decoration:none;transition:all .2s;
+    }
+    .pc.s1 .pc-btn { border:1.5px solid rgba(237,232,220,.18);color:var(--cream); }
+    .pc.s1 .pc-btn:hover { border-color:var(--cream);background:rgba(237,232,220,.05); }
+    .pc.s2 .pc-btn { background:var(--ink);color:var(--cream); }
+    .pc.s2 .pc-btn:hover { background:#0d1a10;transform:translateY(-2px); }
+    .pc.s3 .pc-btn { border:1.5px solid rgba(201,186,238,.25);color:var(--lav); }
+    .pc.s3 .pc-btn:hover { background:rgba(201,186,238,.1); }
+
+    /* ─────────────── CTA ─────────────── */
+    #cta {
+      background:var(--ink); padding:11rem 4rem;
+      text-align:center; position:relative; overflow:hidden;
+    }
+    /* diagonal stripe bg */
+    #cta::before {
+      content:''; position:absolute; inset:0;
+      background:repeating-linear-gradient(
+        -45deg,
+        rgba(237,232,220,.015) 0px, rgba(237,232,220,.015) 1px,
+        transparent 1px, transparent 40px
+      );
+      pointer-events:none;
+    }
+    .cta-bg-word {
+      position:absolute; font-family:'Fraunces',serif; font-style:italic;
+      font-size:22vw; font-weight:900; color:rgba(237,232,220,.025);
+      white-space:nowrap; bottom:-1.5rem; left:50%;
+      transform:translateX(-50%); pointer-events:none; line-height:1; z-index:0;
+    }
+    .cta-inner { position:relative;z-index:1; }
+    .cta-badge {
+      display:inline-flex;align-items:center;gap:.5rem;
+      background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);
+      color:var(--mint);padding:.35rem .9rem;border-radius:100px;
+      font-size:.78rem;font-weight:600;margin-bottom:2rem;
+    }
+    .cta-h {
+      font-family:'Fraunces',serif;font-style:italic;font-weight:900;
+      font-size:clamp(3rem,6.5vw,7rem);line-height:.95;letter-spacing:-.04em;
+      color:var(--cream);max-width:820px;margin:0 auto 1.75rem;
+    }
+    .cta-h .c-mint { color:var(--mint); }
+    .cta-sub { font-size:1.05rem;color:rgba(237,232,220,.5);margin-bottom:2.75rem; }
+    .btn-wa {
+      display:inline-flex;align-items:center;gap:.75rem;
+      background:var(--mint);color:#000;
+      padding:1.1rem 2.75rem;border-radius:100px;
+      font-weight:800;font-size:1.1rem;text-decoration:none;
+      box-shadow:0 0 50px rgba(37,211,102,.3);
+      transition:all .28s;
+    }
+    .btn-wa:hover { transform:translateY(-4px);box-shadow:0 0 70px rgba(37,211,102,.5); }
+    .btn-wa svg { width:22px;height:22px; }
+    .cta-footnote { margin-top:1.25rem;font-size:.82rem;color:rgba(237,232,220,.3); }
+
+    /* ─────────────── FOOTER ─────────────── */
+    footer {
+      background:#040807; padding:4.5rem 4rem 2.5rem;
+      border-top:1px solid rgba(237,232,220,.05);
+    }
+    .ft-grid { display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:3.5rem; }
+    .ft-logo { font-family:'Fraunces',serif;font-style:italic;font-size:1.75rem;font-weight:800;color:var(--cream);text-decoration:none;display:block;margin-bottom:.75rem; }
+    .ft-tag  { font-size:.875rem;color:rgba(237,232,220,.35);line-height:1.55;max-width:270px; }
+    .ft-col-h{ font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgba(237,232,220,.27);margin-bottom:1.25rem; }
+    .ft-links{ list-style:none;display:flex;flex-direction:column;gap:.75rem; }
+    .ft-links a{ color:rgba(237,232,220,.45);text-decoration:none;font-size:.875rem;transition:color .18s; }
+    .ft-links a:hover{ color:var(--cream); }
+    .ft-bottom{
+      padding-top:2rem;border-top:1px solid rgba(237,232,220,.05);
+      display:flex;justify-content:space-between;align-items:center;
+    }
+    .ft-copy { font-size:.78rem;color:rgba(237,232,220,.2); }
+    .ft-love { font-size:.78rem;color:rgba(237,232,220,.2); }
+    .ft-love span { color:#FF6B6B; }
+
+    /* ─────────────── RESPONSIVE ─────────────── */
+    @media (max-width:900px) {
+      #hero { grid-template-columns:1fr;padding:8rem 2rem 4rem;text-align:center; }
+      .hero-ctas,.hero-trust { justify-content:center; }
+      .hero-right { display:none; }
+      nav { padding:1.25rem 2rem; }
+      .nav-links li:not(:last-child) { display:none; }
+      #problem,#how,#features,#languages,#pricing,#cta { padding:6rem 2rem; }
+      .p-cards,.how-grid,.bento,.price-grid { grid-template-columns:1fr; }
+      .bc.span2 { grid-column:span 1; }
+      .how-line { display:none; }
+      .lang-layout { grid-template-columns:1fr;gap:3rem; }
+      .ft-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width:560px) {
+      .hero-h1 { font-size:2.75rem; }
+      .ft-grid { grid-template-columns:1fr; }
+      .lang-stats { grid-template-columns:1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="grain"></div>
+
+<!-- ─── NAV ─────────────────────────────────────────────── -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Patherle<em>.</em></a>
+  <ul class="nav-links">
+    <li><a href="#problem">why</a></li>
+    <li><a href="#how">how it works</a></li>
+    <li><a href="#features">features</a></li>
+    <li><a href="#pricing">pricing</a></li>
+    <li><a href="/" class="nav-cta">open dashboard →</a></li>
+  </ul>
+</nav>
+
+<!-- ─── HERO ─────────────────────────────────────────────── -->
+<section id="hero">
+  <div class="hero-blob hero-blob-1"></div>
+  <div class="hero-blob hero-blob-2"></div>
+  <div class="hero-blob hero-blob-3"></div>
+
+  <div class="hero-left">
+    <div class="hero-pill">
+      <div class="pulse-dot"></div>
+      live — multilingual whatsapp ai
+    </div>
+
+    <h1 class="hero-h1">
+      ai that actually<br>
+      speaks <span class="c-mint">their</span><br>
+      language<span class="c-lav">.</span>
+    </h1>
+
+    <p class="hero-sub">
+      drop your knowledge base. patherle handles every customer question — in hindi, kannada, or english. text <em>or</em> voice. 24/7.
+    </p>
+
+    <div class="hero-ctas">
+      <a href="/" class="btn-main">get started free →</a>
+      <a href="#how" class="btn-outline">see how it works ↓</a>
+    </div>
+
+    <div class="hero-trust">
+      <div class="avatars">
+        <div class="av" style="background:linear-gradient(135deg,#FF6B2B,#FFD93D)">RK</div>
+        <div class="av" style="background:linear-gradient(135deg,#C9BAEE,#7B6FC4)">SM</div>
+        <div class="av" style="background:linear-gradient(135deg,#25D366,#128C7E)">VH</div>
+        <div class="av" style="background:linear-gradient(135deg,#EDE8DC,#C9BAEE);color:#162019">AK</div>
+        <div class="av" style="background:linear-gradient(135deg,#F5E53B,#FF6B2B)">PR</div>
+      </div>
+      <p class="trust-txt"><strong>200+ businesses</strong> already using patherle</p>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <div class="phone-stage">
+      <div class="phone-glow"></div>
+      <div class="phone">
+        <div class="phone-notch"></div>
+        <div class="phone-screen">
+          <div class="chat-hdr">
+            <div class="chat-ava">RS</div>
+            <div>
+              <div class="chat-nm">Rahul's Store 🛍️</div>
+              <div class="chat-st">patherle ai · online</div>
+            </div>
+          </div>
+          <div class="chat-body">
+            <div class="msg in">
+              <span class="tag">Hindi</span>
+              नमस्ते! रिटर्न पॉलिसी क्या है?
+            </div>
+            <div class="msg out">
+              <span class="tag">AI — instant</span>
+              हमारी रिटर्न पॉलिसी 30 दिन है! 🙏
+            </div>
+            <div class="msg in">
+              <span class="tag">Kannada</span>
+              ಬೆಲೆ ಎಷ್ಟು?
+            </div>
+            <div class="msg out">
+              <span class="tag">AI — instant</span>
+              ₹499 only! Free delivery 🚀
+            </div>
+            <div class="msg in">
+              <span class="tag">English</span>
+              What are your hours?
+            </div>
+            <div class="typing-wrap">
+              <div class="td"></div><div class="td"></div><div class="td"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── MARQUEE ───────────────────────────────────────────── -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="mi"><span class="mi-dot"></span>Hindi</span>
+    <span class="mi"><span class="mi-dot"></span>Kannada</span>
+    <span class="mi"><span class="mi-dot"></span>English</span>
+    <span class="mi"><span class="mi-dot"></span>Voice Notes</span>
+    <span class="mi"><span class="mi-dot"></span>PDF Upload</span>
+    <span class="mi"><span class="mi-dot"></span>CSV Support</span>
+    <span class="mi"><span class="mi-dot"></span>RAG Engine</span>
+    <span class="mi"><span class="mi-dot"></span>WhatsApp Native</span>
+    <span class="mi"><span class="mi-dot"></span>24/7 Active</span>
+    <span class="mi"><span class="mi-dot"></span>Auto-Reply</span>
+    <span class="mi"><span class="mi-dot"></span>Multi-Tenant</span>
+    <span class="mi"><span class="mi-dot"></span>Zero Latency</span>
+    <!-- duplicate for seamless loop -->
+    <span class="mi"><span class="mi-dot"></span>Hindi</span>
+    <span class="mi"><span class="mi-dot"></span>Kannada</span>
+    <span class="mi"><span class="mi-dot"></span>English</span>
+    <span class="mi"><span class="mi-dot"></span>Voice Notes</span>
+    <span class="mi"><span class="mi-dot"></span>PDF Upload</span>
+    <span class="mi"><span class="mi-dot"></span>CSV Support</span>
+    <span class="mi"><span class="mi-dot"></span>RAG Engine</span>
+    <span class="mi"><span class="mi-dot"></span>WhatsApp Native</span>
+    <span class="mi"><span class="mi-dot"></span>24/7 Active</span>
+    <span class="mi"><span class="mi-dot"></span>Auto-Reply</span>
+    <span class="mi"><span class="mi-dot"></span>Multi-Tenant</span>
+    <span class="mi"><span class="mi-dot"></span>Zero Latency</span>
+  </div>
+</div>
+
+<!-- ─── PROBLEM ───────────────────────────────────────────── -->
+<section id="problem">
+  <span class="sec-label">the problem</span>
+  <h2 class="sec-h reveal">your support team<br>is drowning 💀</h2>
+  <p class="sec-sub reveal">india has 600M+ vernacular internet users. they're texting in hindi. in kannada. in their language. most businesses aren't ready.</p>
+
+  <div class="p-cards">
+    <div class="p-card reveal">
+      <span class="p-emoji">📵</span>
+      <div class="p-stat">400+<small>missed messages / week</small></div>
+      <h3 class="p-title">ghosting your customers</h3>
+      <p class="p-desc">while your team sleeps, customers ask questions and get silence. every unanswered message is a sale walking out the door.</p>
+    </div>
+    <div class="p-card reveal" style="transition-delay:.12s">
+      <span class="p-emoji">🗣️</span>
+      <div class="p-stat">70%<small>prefer their mother tongue</small></div>
+      <h3 class="p-title">lost in translation</h3>
+      <p class="p-desc">your english-only support can't talk to most of india. language barriers aren't a nice-to-have fix — they're a revenue leak.</p>
+    </div>
+    <div class="p-card reveal" style="transition-delay:.24s">
+      <span class="p-emoji">⏰</span>
+      <div class="p-stat">3 min<small>max wait before they bounce</small></div>
+      <h3 class="p-title">slow = dead</h3>
+      <p class="p-desc">gen z doesn't wait. 3 minutes of silence and they're on your competitor's whatsapp. response speed is the new storefront.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── HOW IT WORKS ──────────────────────────────────────── -->
+<section id="how">
+  <span class="sec-label">how it works</span>
+  <h2 class="sec-h reveal">three steps.<br><span style="color:var(--lav)">that's literally it.</span></h2>
+  <p class="sec-sub reveal">no code. no complex setup. seriously.</p>
+
+  <div class="how-grid">
+    <div class="how-line"></div>
+    <div class="how-step reveal">
+      <div class="how-num">01</div>
+      <div class="how-icon" style="background:rgba(37,211,102,.1)">📄</div>
+      <h3 class="how-title">drop your docs</h3>
+      <p class="how-desc">upload your FAQs, product catalog, pricing, policies — anything customers ask about. PDFs and CSVs work out of the box.</p>
+    </div>
+    <div class="how-step reveal" style="transition-delay:.15s">
+      <div class="how-num">02</div>
+      <div class="how-icon" style="background:rgba(201,186,238,.1)">🧠</div>
+      <h3 class="how-title">ai learns everything</h3>
+      <p class="how-desc">patherle reads, chunks, and embeds your docs into a vector knowledge base. it becomes an expert on your business. instantly.</p>
+    </div>
+    <div class="how-step reveal" style="transition-delay:.3s">
+      <div class="how-num">03</div>
+      <div class="how-icon" style="background:rgba(255,107,43,.1)">💬</div>
+      <h3 class="how-title">customers get answers</h3>
+      <p class="how-desc">when someone messages on whatsapp, patherle replies in seconds — in their language, with accurate answers pulled straight from your docs.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── FEATURES BENTO ────────────────────────────────────── -->
+<section id="features">
+  <span class="sec-label">features</span>
+  <h2 class="sec-h reveal">everything you need.<br><span style="color:var(--lav)">nothing you don't.</span></h2>
+  <p class="sec-sub reveal">built for real businesses, not enterprise boardrooms.</p>
+
+  <div class="bento">
+    <div class="bc span2 reveal">
+      <span class="bc-icon">🗣️</span>
+      <h3 class="bc-title">speaks three languages — natively</h3>
+      <p class="bc-desc">hindi, kannada, english — patherle auto-detects the language your customer writes in and responds in kind. no routing rules, no config, no headaches.</p>
+      <div class="bc-visual">
+        <span class="bc-lang-chip">हिंदी</span>
+        <span class="bc-lang-chip">ಕನ್ನಡ</span>
+        <span class="bc-lang-chip">English</span>
+      </div>
+      <span class="bc-tag">auto-detect · always on</span>
+    </div>
+
+    <div class="bc reveal" style="transition-delay:.1s">
+      <span class="bc-icon">🎤</span>
+      <h3 class="bc-title">voice notes? understood.</h3>
+      <p class="bc-desc">customer sends a voice note in hindi — patherle transcribes it with whisper and answers instantly. no extra steps needed.</p>
+    </div>
+
+    <div class="bc reveal" style="transition-delay:.1s">
+      <span class="bc-icon">⚡</span>
+      <h3 class="bc-title">instant RAG</h3>
+      <p class="bc-desc">semantic search retrieves the most relevant chunk from your knowledge base. grounded answers. no hallucinations.</p>
+      <div class="bc-bar-wrap">
+        <div class="bc-bar-row">accuracy <div class="bc-bar-track"><div class="bc-bar-fill" style="width:93%"></div></div> 93%</div>
+        <div class="bc-bar-row">latency  <div class="bc-bar-track"><div class="bc-bar-fill" style="width:82%;background:var(--lav)"></div></div> &lt;2s</div>
+      </div>
+    </div>
+
+    <div class="bc reveal" style="transition-delay:.2s">
+      <span class="bc-icon">🤖</span>
+      <h3 class="bc-title">auto-reply on whatsapp</h3>
+      <p class="bc-desc">plugs directly into the whatsapp business api. your number, your brand, patherle's brain powering every reply.</p>
+      <span class="bc-tag">whatsapp business api</span>
+    </div>
+
+    <div class="bc reveal" style="transition-delay:.2s">
+      <span class="bc-icon">🏢</span>
+      <h3 class="bc-title">multi-tenant</h3>
+      <p class="bc-desc">run multiple businesses from one dashboard. each tenant has a completely isolated knowledge base and whatsapp number.</p>
+    </div>
+
+    <div class="bc reveal" style="transition-delay:.3s">
+      <span class="bc-icon">📊</span>
+      <h3 class="bc-title">analytics</h3>
+      <p class="bc-desc">see which questions are trending, which docs get cited most, and where your knowledge base has gaps.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── LANGUAGE SHOWCASE ─────────────────────────────────── -->
+<section id="languages">
+  <span class="sec-label">live demo</span>
+  <h2 class="sec-h reveal">same question.<br><em>three languages.</em></h2>
+
+  <div class="lang-layout">
+    <div class="reveal-l">
+      <div class="lang-tabs">
+        <button class="lang-tab active" onclick="setLang('en',this)">English</button>
+        <button class="lang-tab"        onclick="setLang('hi',this)">Hindi</button>
+        <button class="lang-tab"        onclick="setLang('kn',this)">Kannada</button>
+      </div>
+
+      <div id="lc-en" class="lang-card active">
+        <div class="lc-inner">
+          <div class="lc-q">customer asks:</div>
+          <div class="lc-msg">What's your return policy?</div>
+          <div class="lc-a">patherle replies:</div>
+          <div class="lc-ans">Our return policy is 30 days from the purchase date. Just send us your order ID and we'll process it within 24 hours — no questions asked! 😊</div>
+        </div>
+      </div>
+
+      <div id="lc-hi" class="lang-card">
+        <div class="lc-inner">
+          <div class="lc-q">customer asks:</div>
+          <div class="lc-msg">रिटर्न पॉलिसी क्या है?</div>
+          <div class="lc-a">patherle replies:</div>
+          <div class="lc-ans">हमारी रिटर्न पॉलिसी खरीद की तारीख से 30 दिन की है। बस अपना ऑर्डर ID भेजें, हम 24 घंटे में प्रोसेस करेंगे! 😊</div>
+        </div>
+      </div>
+
+      <div id="lc-kn" class="lang-card">
+        <div class="lc-inner">
+          <div class="lc-q">customer asks:</div>
+          <div class="lc-msg">ರಿಟರ್ನ್ ಪಾಲಿಸಿ ಏನು?</div>
+          <div class="lc-a">patherle replies:</div>
+          <div class="lc-ans">ನಮ್ಮ ರಿಟರ್ನ್ ಪಾಲಿಸಿ ಖರೀದಿ ದಿನಾಂಕದಿಂದ 30 ದಿನಗಳು. ನಿಮ್ಮ ಆರ್ಡರ್ ID ಕಳುಹಿಸಿ, 24 ಗಂಟೆಯಲ್ಲಿ ಪ್ರಕ್ರಿಯೆ ಮಾಡುತ್ತೇವೆ! 😊</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reveal-r">
+      <div class="lang-stats">
+        <div class="ls">
+          <div class="ls-n">3</div>
+          <div class="ls-l">languages supported out of the box</div>
+        </div>
+        <div class="ls" style="background:var(--ink);color:var(--cream);box-shadow:4px 4px 0 var(--lav)">
+          <div class="ls-n" style="color:var(--mint)">&lt;2s</div>
+          <div class="ls-l" style="color:rgba(237,232,220,.55)">avg response time</div>
+        </div>
+        <div class="ls" style="background:var(--lav);box-shadow:4px 4px 0 var(--ink)">
+          <div class="ls-n">600M+</div>
+          <div class="ls-l">vernacular internet users in india</div>
+        </div>
+        <div class="ls" style="background:var(--forest);color:var(--cream);box-shadow:4px 4px 0 var(--lav)">
+          <div class="ls-n" style="color:var(--cream)">24/7</div>
+          <div class="ls-l" style="color:rgba(237,232,220,.5)">never sleeps. never calls in sick.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── PRICING ───────────────────────────────────────────── -->
+<section id="pricing">
+  <span class="sec-label">pricing</span>
+  <h2 class="sec-h reveal">honest pricing.<br><span style="color:var(--lav)">no surprises.</span></h2>
+  <p class="sec-sub reveal">start free. scale when your customers scale.</p>
+
+  <div class="price-grid">
+    <div class="pc s1 reveal">
+      <div class="pc-tier" style="color:rgba(237,232,220,.5)">Starter</div>
+      <div class="pc-price" style="color:var(--cream)">Free</div>
+      <div class="pc-period" style="color:rgba(237,232,220,.35)">forever · no credit card</div>
+      <ul class="pc-list" style="color:rgba(237,232,220,.7)">
+        <li>1 business tenant</li>
+        <li>500 messages / month</li>
+        <li>PDF + CSV upload</li>
+        <li>Hindi, Kannada, English</li>
+        <li>WhatsApp webhook</li>
+      </ul>
+      <a href="/" class="pc-btn">get started →</a>
+    </div>
+
+    <div class="pc s2 reveal" style="transition-delay:.12s">
+      <div class="pc-pop">most popular</div>
+      <div class="pc-tier">Growth</div>
+      <div class="pc-price">₹2,999<sub>/mo</sub></div>
+      <div class="pc-period">billed monthly</div>
+      <ul class="pc-list">
+        <li>5 business tenants</li>
+        <li>10,000 messages / month</li>
+        <li>Voice note support</li>
+        <li>Analytics dashboard</li>
+        <li>Priority support</li>
+        <li>Custom system prompt</li>
+      </ul>
+      <a href="/" class="pc-btn">start growth plan →</a>
+    </div>
+
+    <div class="pc s3 reveal" style="transition-delay:.24s">
+      <div class="pc-tier" style="color:rgba(201,186,238,.6)">Enterprise</div>
+      <div class="pc-price" style="color:var(--lav)">Custom</div>
+      <div class="pc-period" style="color:rgba(201,186,238,.35)">let's talk</div>
+      <ul class="pc-list" style="color:rgba(237,232,220,.7)">
+        <li>Unlimited tenants</li>
+        <li>Unlimited messages</li>
+        <li>Dedicated infrastructure</li>
+        <li>SLA guarantee</li>
+        <li>Custom integrations</li>
+        <li>White-label option</li>
+      </ul>
+      <a href="mailto:hello@patherle.ai" class="pc-btn">contact us →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ───────────────────────────────────────────────── -->
+<section id="cta">
+  <div class="cta-bg-word">patherle</div>
+  <div class="cta-inner">
+    <div class="cta-badge reveal"><div class="pulse-dot"></div>set up in under 10 minutes</div>
+    <h2 class="cta-h reveal">
+      stop making your<br>customers <span class="c-mint">wait.</span>
+    </h2>
+    <p class="cta-sub reveal">no code. no complexity. just drop your docs and go.</p>
+    <a href="/" class="btn-wa reveal">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      start for free
+    </a>
+    <p class="cta-footnote reveal">no credit card. no nonsense. just patherle.</p>
+  </div>
+</section>
+
+<!-- ─── FOOTER ────────────────────────────────────────────── -->
+<footer>
+  <div class="ft-grid">
+    <div>
+      <a href="#" class="ft-logo">Patherle.</a>
+      <p class="ft-tag">the multilingual whatsapp ai for indian businesses. built with care, powered by real ai.</p>
+    </div>
+    <div>
+      <div class="ft-col-h">Product</div>
+      <ul class="ft-links">
+        <li><a href="#how">how it works</a></li>
+        <li><a href="#features">features</a></li>
+        <li><a href="#pricing">pricing</a></li>
+        <li><a href="/">dashboard</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-col-h">Languages</div>
+      <ul class="ft-links">
+        <li><a href="#">Hindi (हिंदी)</a></li>
+        <li><a href="#">Kannada (ಕನ್ನಡ)</a></li>
+        <li><a href="#">English</a></li>
+        <li><a href="#" style="color:rgba(237,232,220,.25)">more coming soon</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-col-h">Company</div>
+      <ul class="ft-links">
+        <li><a href="#">about</a></li>
+        <li><a href="#">blog</a></li>
+        <li><a href="#">privacy</a></li>
+        <li><a href="#">terms</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="ft-bottom">
+    <p class="ft-copy">© 2024 Patherle. all rights reserved.</p>
+    <p class="ft-love">made with <span>♥</span> for india</p>
+  </div>
+</footer>
+
+<script>
+  // ── Nav scroll ──
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('stuck', window.scrollY > 40);
+  }, { passive: true });
+
+  // ── Scroll reveal ──
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
+  }, { threshold: 0.1, rootMargin: '0px 0px -48px 0px' });
+
+  document.querySelectorAll('.reveal,.reveal-l,.reveal-r').forEach(el => io.observe(el));
+
+  // ── Language tabs ──
+  function setLang(lang, btn) {
+    document.querySelectorAll('.lang-card').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.lang-tab').forEach(b => b.classList.remove('active'));
+    document.getElementById('lc-' + lang).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>
