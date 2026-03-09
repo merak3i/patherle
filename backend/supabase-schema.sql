@@ -20,6 +20,28 @@ CREATE TABLE documents (
   UNIQUE(tenant_id, filename)
 );
 
+-- Query analytics table: tracks every RAG query for the analytics dashboard
+CREATE TABLE IF NOT EXISTS queries (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE,
+  query_text TEXT NOT NULL,
+  language TEXT DEFAULT 'en',
+  source TEXT DEFAULT 'api',       -- 'api' | 'whatsapp'
+  response_ms INTEGER,             -- latency in ms
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Users table: for auth (email/password + google)
+CREATE TABLE IF NOT EXISTS users (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  name TEXT,
+  avatar_url TEXT,
+  plan TEXT DEFAULT 'starter',     -- 'starter' | 'growth' | 'enterprise'
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
 -- Enable Row Level Security (optional, for production)
 -- ALTER TABLE tenants ENABLE ROW LEVEL SECURITY;
 -- ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
+-- ALTER TABLE queries ENABLE ROW LEVEL SECURITY;

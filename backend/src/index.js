@@ -9,6 +9,8 @@ import tenantRoutes from './routes/tenants.js';
 import uploadRoutes from './routes/upload.js';
 import documentRoutes from './routes/documents.js';
 import queryRoutes from './routes/query.js';
+import analyticsRoutes from './routes/analytics.js';
+import paymentRoutes from './routes/payments.js';
 import whatsappRoutes from './routes/whatsapp.js';
 
 dotenv.config();
@@ -35,6 +37,8 @@ app.use('/api/tenants', tenantRoutes);
 app.use('/api/upload', uploadRoutes);
 app.use('/api/documents', documentRoutes);
 app.use('/api/query', queryRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/payments', paymentRoutes);
 app.use('/webhook', whatsappRoutes);
 
 // Health check
