@@ -539,6 +539,7 @@
     <li><a href="#how">how it works</a></li>
     <li><a href="#features">features</a></li>
     <li><a href="#pricing">pricing</a></li>
+    <li><a href="#" onclick="openContact();return false;">contact</a></li>
     <li><a href="/" class="nav-cta">open dashboard →</a></li>
   </ul>
 </nav>
@@ -1000,14 +1001,121 @@
         <li><a href="#">blog</a></li>
         <li><a href="#">privacy</a></li>
         <li><a href="#">terms</a></li>
+        <li><a href="mailto:mewdiaservice@gmail.com">mewdiaservice@gmail.com</a></li>
+        <li><a href="#" onclick="openContact();return false;" style="color:var(--mint);font-weight:600;">contact us ↗</a></li>
       </ul>
     </div>
   </div>
   <div class="ft-bottom">
-    <p class="ft-copy">© 2024 Patherle. all rights reserved.</p>
+    <p class="ft-copy">© 2025 Patherle. all rights reserved.</p>
     <p class="ft-love">made with <span>♥</span> for india</p>
   </div>
 </footer>
+
+<!-- ─── CONTACT MODAL ─────────────────────────────────── -->
+<div id="contact-overlay" onclick="if(event.target===this)closeContact()" style="
+  display:none;position:fixed;inset:0;z-index:9000;
+  background:rgba(4,8,7,.75);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;padding:1.5rem;
+">
+  <div id="contact-modal" style="
+    background:#111a13;border:1px solid rgba(237,232,220,.09);
+    border-radius:1.5rem;width:100%;max-width:480px;
+    padding:2.5rem;position:relative;
+    box-shadow:0 32px 80px rgba(0,0,0,.6);
+    animation:modalIn .3s cubic-bezier(.22,1,.36,1);
+  ">
+    <!-- close -->
+    <button onclick="closeContact()" style="
+      position:absolute;top:1.25rem;right:1.25rem;
+      background:rgba(237,232,220,.07);border:none;cursor:pointer;
+      color:rgba(237,232,220,.5);border-radius:50%;width:2rem;height:2rem;
+      font-size:1.1rem;display:flex;align-items:center;justify-content:center;
+      transition:background .2s,color .2s;
+    " onmouseover="this.style.background='rgba(237,232,220,.14)';this.style.color='#ede8dc'"
+       onmouseout="this.style.background='rgba(237,232,220,.07)';this.style.color='rgba(237,232,220,.5)'">✕</button>
+
+    <!-- header -->
+    <div style="margin-bottom:1.75rem;">
+      <div style="
+        display:inline-flex;align-items:center;gap:.5rem;
+        background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);
+        border-radius:100px;padding:.3rem .85rem;font-size:.75rem;
+        color:var(--mint);font-weight:600;letter-spacing:.04em;margin-bottom:1rem;
+      ">
+        <div style="width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 6px var(--mint);"></div>
+        get in touch
+      </div>
+      <h3 style="font-family:'Fraunces',serif;font-style:italic;font-size:1.75rem;font-weight:800;color:var(--cream);line-height:1.15;margin-bottom:.5rem;">
+        let's talk.
+      </h3>
+      <p style="font-size:.875rem;color:rgba(237,232,220,.45);line-height:1.55;">
+        Questions, demos, partnerships — drop us a note and we'll get back within 24 hours.
+      </p>
+    </div>
+
+    <!-- form -->
+    <form id="contact-form" onsubmit="submitContact(event)" style="display:flex;flex-direction:column;gap:1rem;">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;">
+        <div>
+          <label style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(237,232,220,.35);display:block;margin-bottom:.4rem;">Name</label>
+          <input name="name" required placeholder="Your name" style="
+            width:100%;background:rgba(237,232,220,.05);border:1px solid rgba(237,232,220,.1);
+            border-radius:.6rem;padding:.7rem .9rem;color:var(--cream);font-family:'DM Sans',sans-serif;
+            font-size:.875rem;outline:none;transition:border .2s;
+          " onfocus="this.style.borderColor='rgba(37,211,102,.4)'" onblur="this.style.borderColor='rgba(237,232,220,.1)'" />
+        </div>
+        <div>
+          <label style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(237,232,220,.35);display:block;margin-bottom:.4rem;">Company</label>
+          <input name="company" placeholder="Business name" style="
+            width:100%;background:rgba(237,232,220,.05);border:1px solid rgba(237,232,220,.1);
+            border-radius:.6rem;padding:.7rem .9rem;color:var(--cream);font-family:'DM Sans',sans-serif;
+            font-size:.875rem;outline:none;transition:border .2s;
+          " onfocus="this.style.borderColor='rgba(37,211,102,.4)'" onblur="this.style.borderColor='rgba(237,232,220,.1)'" />
+        </div>
+      </div>
+      <div>
+        <label style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(237,232,220,.35);display:block;margin-bottom:.4rem;">Email</label>
+        <input name="email" type="email" required placeholder="you@company.com" style="
+          width:100%;background:rgba(237,232,220,.05);border:1px solid rgba(237,232,220,.1);
+          border-radius:.6rem;padding:.7rem .9rem;color:var(--cream);font-family:'DM Sans',sans-serif;
+          font-size:.875rem;outline:none;transition:border .2s;
+        " onfocus="this.style.borderColor='rgba(37,211,102,.4)'" onblur="this.style.borderColor='rgba(237,232,220,.1)'" />
+      </div>
+      <div>
+        <label style="font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:rgba(237,232,220,.35);display:block;margin-bottom:.4rem;">Message</label>
+        <textarea name="message" required rows="4" placeholder="Tell us what you need..." style="
+          width:100%;background:rgba(237,232,220,.05);border:1px solid rgba(237,232,220,.1);
+          border-radius:.6rem;padding:.7rem .9rem;color:var(--cream);font-family:'DM Sans',sans-serif;
+          font-size:.875rem;outline:none;transition:border .2s;resize:none;
+        " onfocus="this.style.borderColor='rgba(37,211,102,.4)'" onblur="this.style.borderColor='rgba(237,232,220,.1)'"></textarea>
+      </div>
+      <button type="submit" id="contact-btn" style="
+        width:100%;background:var(--mint);color:#000;border:none;cursor:pointer;
+        border-radius:.75rem;padding:.85rem 1.5rem;font-family:'DM Sans',sans-serif;
+        font-size:.95rem;font-weight:700;letter-spacing:.01em;
+        transition:transform .2s,box-shadow .2s,opacity .2s;
+        display:flex;align-items:center;justify-content:center;gap:.5rem;
+      " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(37,211,102,.35)'"
+         onmouseout="this.style.transform='';this.style.boxShadow=''">
+        send message
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </form>
+
+    <!-- success state (hidden) -->
+    <div id="contact-success" style="display:none;text-align:center;padding:1.5rem 0;">
+      <div style="font-size:3rem;margin-bottom:1rem;">🎉</div>
+      <h4 style="font-family:'Fraunces',serif;font-style:italic;font-size:1.5rem;font-weight:800;color:var(--cream);margin-bottom:.5rem;">message sent!</h4>
+      <p style="font-size:.875rem;color:rgba(237,232,220,.45);">We'll get back to you at <span id="success-email" style="color:var(--mint);"></span> within 24 hours.</p>
+      <button onclick="closeContact()" style="
+        margin-top:1.5rem;background:rgba(237,232,220,.07);border:1px solid rgba(237,232,220,.1);
+        color:var(--cream);border-radius:.6rem;padding:.65rem 1.5rem;cursor:pointer;
+        font-family:'DM Sans',sans-serif;font-size:.875rem;font-weight:600;transition:background .2s;
+      " onmouseover="this.style.background='rgba(237,232,220,.12)'" onmouseout="this.style.background='rgba(237,232,220,.07)'">close</button>
+    </div>
+  </div>
+</div>
 
 <script>
   // ── Nav scroll ──
@@ -1030,6 +1138,69 @@
     document.getElementById('lc-' + lang).classList.add('active');
     btn.classList.add('active');
   }
+
+  // ── Contact modal ──
+  function openContact() {
+    const ov = document.getElementById('contact-overlay');
+    ov.style.display = 'flex';
+    requestAnimationFrame(() => ov.style.opacity = 1);
+    document.body.style.overflow = 'hidden';
+    // reset to form view each time
+    document.getElementById('contact-form').style.display = 'flex';
+    document.getElementById('contact-success').style.display = 'none';
+    document.getElementById('contact-btn').textContent = 'send message';
+    document.getElementById('contact-btn').disabled = false;
+  }
+
+  function closeContact() {
+    const ov = document.getElementById('contact-overlay');
+    ov.style.opacity = 0;
+    setTimeout(() => { ov.style.display = 'none'; }, 200);
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeContact();
+  });
+
+  async function submitContact(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn  = document.getElementById('contact-btn');
+    const data = Object.fromEntries(new FormData(form));
+
+    btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .8s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> sending…';
+    btn.disabled = true;
+
+    // Send via mailto as fallback (works without a backend)
+    const subject = encodeURIComponent(`Patherle inquiry from ${data.name}${data.company ? ' @ ' + data.company : ''}`);
+    const body    = encodeURIComponent(`Name: ${data.name}\nCompany: ${data.company || '—'}\nEmail: ${data.email}\n\nMessage:\n${data.message}`);
+    window.location.href = `mailto:mewdiaservice@gmail.com?subject=${subject}&body=${body}`;
+
+    // Show success after brief delay
+    setTimeout(() => {
+      document.getElementById('contact-form').style.display    = 'none';
+      document.getElementById('contact-success').style.display = 'block';
+      document.getElementById('success-email').textContent     = data.email;
+      form.reset();
+    }, 800);
+  }
 </script>
+<style>
+  @keyframes modalIn {
+    from { opacity:0; transform:translateY(20px) scale(.97); }
+    to   { opacity:1; transform:translateY(0) scale(1); }
+  }
+  @keyframes spin {
+    to { transform:rotate(360deg); }
+  }
+  #contact-overlay {
+    transition: opacity .2s ease;
+  }
+  #contact-modal input::placeholder,
+  #contact-modal textarea::placeholder {
+    color: rgba(237,232,220,.2);
+  }
+</style>
 </body>
 </html>
