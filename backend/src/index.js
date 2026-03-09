@@ -12,6 +12,7 @@ import queryRoutes from './routes/query.js';
 import analyticsRoutes from './routes/analytics.js';
 import paymentRoutes from './routes/payments.js';
 import whatsappRoutes from './routes/whatsapp.js';
+import telegramRoutes from './routes/telegram.js';
 
 dotenv.config();
 
@@ -40,6 +41,7 @@ app.use('/api/query', queryRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/payments', paymentRoutes);
 app.use('/webhook', whatsappRoutes);
+app.use('/webhook/telegram', telegramRoutes);
 
 // Health check
 app.get('/health', (req, res) => {

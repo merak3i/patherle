@@ -5,9 +5,28 @@ CREATE TABLE tenants (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   company_name TEXT NOT NULL,
   industry TEXT,
+  -- WhatsApp Business API
   whatsapp_number TEXT UNIQUE,
+  whatsapp_token TEXT,
+  whatsapp_phone_id TEXT,
+  -- Telegram Bot API
+  telegram_bot_token TEXT,
+  telegram_bot_username TEXT,
+  -- Plan & usage
+  plan TEXT DEFAULT 'free',
+  monthly_message_limit INTEGER DEFAULT 50,
+  messages_used INTEGER DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+-- Migration: add new columns to existing tenants table (safe to run multiple times)
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS whatsapp_token TEXT;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS whatsapp_phone_id TEXT;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS telegram_bot_token TEXT;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS telegram_bot_username TEXT;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT 'free';
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS monthly_message_limit INTEGER DEFAULT 50;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS messages_used INTEGER DEFAULT 0;
 
 -- Documents table: tracks uploaded knowledge base files
 CREATE TABLE documents (
