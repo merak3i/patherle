@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Patherle — Full Stack Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0A0F0C;
+  --forest:#162019;
+  --forest2:#1d2b20;
+  --cream:#EDE8DC;
+  --lav:#C9BAEE;
+  --mint:#25D366;
+  --orange:#FF6B2B;
+  --yellow:#F5E53B;
+  --blue:#2AABEE;
+  --glass:rgba(22,32,25,0.7);
+  --border:rgba(237,232,220,0.07);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--ink);
+  color:var(--cream);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ── Grain ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  opacity:.04;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Layout ── */
+.page{max-width:1380px;margin:0 auto;padding:3rem 2.5rem 6rem}
+
+/* ── Pill badge ── */
+.pill{
+  display:inline-flex;align-items:center;gap:.45rem;
+  background:rgba(37,211,102,.1);border:1px solid rgba(37,211,102,.2);
+  border-radius:100px;padding:.3rem .9rem;
+  font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--mint);
+}
+.pill.lav{background:rgba(201,186,238,.08);border-color:rgba(201,186,238,.2);color:var(--lav);}
+.pill.orange{background:rgba(255,107,43,.08);border-color:rgba(255,107,43,.2);color:var(--orange);}
+.pill.yellow{background:rgba(245,229,59,.08);border-color:rgba(245,229,59,.2);color:var(--yellow);}
+.pill.blue{background:rgba(42,171,238,.08);border-color:rgba(42,171,238,.2);color:var(--blue);}
+.pill.cream{background:rgba(237,232,220,.05);border-color:rgba(237,232,220,.12);color:var(--cream);}
+.pulse-dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 6px currentColor;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* ── Glass card ── */
+.glass{
+  background:var(--glass);
+  border:1px solid var(--border);
+  border-radius:1.25rem;
+  backdrop-filter:blur(20px);
+}
+
+/* ────────────────────────────────
+   HEADER
+──────────────────────────────── */
+.header{
+  text-align:center;padding:5rem 1rem 4rem;
+  position:relative;
+}
+.header::after{
+  content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:300px;
+  background:radial-gradient(ellipse at center,rgba(37,211,102,.12) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+}
+.header>*{position:relative;z-index:1}
+.header-logo{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:900;
+  font-size:clamp(4rem,8vw,7rem);letter-spacing:-.04em;
+  color:var(--cream);line-height:1;margin-bottom:.5rem;
+}
+.header-logo span{color:var(--mint)}
+.header-sub{
+  font-size:1.1rem;color:rgba(237,232,220,.45);
+  font-weight:400;letter-spacing:.02em;margin-bottom:1.75rem;
+}
+
+/* ────────────────────────────────
+   SECTION LABEL
+──────────────────────────────── */
+.sec-label{
+  font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;
+  color:rgba(237,232,220,.28);margin-bottom:1.25rem;display:block;
+}
+
+/* ────────────────────────────────
+   CHANNELS
+──────────────────────────────── */
+.channels-row{
+  display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;
+  margin-bottom:0;
+}
+.channel-card{
+  padding:1.75rem 2rem;border-radius:1.25rem;
+  display:flex;align-items:center;gap:1.25rem;
+  transition:transform .25s,box-shadow .25s;
+  position:relative;overflow:hidden;
+}
+.channel-card:hover{transform:translateY(-3px)}
+.channel-card.wa{
+  background:linear-gradient(135deg,rgba(37,211,102,.12),rgba(37,211,102,.04));
+  border:1px solid rgba(37,211,102,.25);
+}
+.channel-card.wa:hover{box-shadow:0 12px 40px rgba(37,211,102,.15)}
+.channel-card.tg{
+  background:linear-gradient(135deg,rgba(42,171,238,.12),rgba(42,171,238,.04));
+  border:1px solid rgba(42,171,238,.25);
+}
+.channel-card.tg:hover{box-shadow:0 12px 40px rgba(42,171,238,.15)}
+.channel-icon{
+  width:56px;height:56px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.channel-card.wa .channel-icon{background:rgba(37,211,102,.15);}
+.channel-card.tg .channel-icon{background:rgba(42,171,238,.15);}
+.channel-title{font-size:1.15rem;font-weight:700;margin-bottom:.25rem}
+.channel-tag{font-size:.8rem;color:rgba(237,232,220,.4)}
+.channel-features{margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap}
+.ch-feat{
+  font-size:.7rem;font-weight:600;padding:.2rem .6rem;border-radius:100px;
+}
+.wa .ch-feat{background:rgba(37,211,102,.12);color:var(--mint);}
+.tg .ch-feat{background:rgba(42,171,238,.12);color:var(--blue);}
+
+/* ── Arrow connector ── */
+.arrow-down{
+  display:flex;flex-direction:column;align-items:center;
+  gap:0;padding:.5rem 0;
+  position:relative;
+}
+.arrow-line{width:2px;height:40px;background:linear-gradient(to bottom,rgba(37,211,102,.6),rgba(37,211,102,.2));position:relative}
+.arrow-line::after{
+  content:'';position:absolute;bottom:-6px;left:50%;transform:translateX(-50%);
+  border-left:5px solid transparent;border-right:5px solid transparent;
+  border-top:7px solid rgba(37,211,102,.6);
+}
+
+/* ────────────────────────────────
+   BACKEND
+──────────────────────────────── */
+.backend-wrapper{
+  display:grid;grid-template-columns:1fr 280px;gap:1.25rem;
+  align-items:start;
+}
+.backend-box{
+  padding:2rem 2rem 2.25rem;
+  background:linear-gradient(135deg,rgba(22,32,25,.9),rgba(16,24,18,.95));
+  border:1px solid rgba(37,211,102,.18);
+  border-radius:1.5rem;
+  position:relative;overflow:hidden;
+}
+.backend-box::before{
+  content:'';position:absolute;top:-60px;right:-60px;
+  width:220px;height:220px;border-radius:50%;
+  background:radial-gradient(circle,rgba(37,211,102,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+.backend-title{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:800;
+  font-size:1.6rem;margin-bottom:.25rem;color:var(--cream);
+}
+.backend-subtitle{font-size:.8rem;color:rgba(237,232,220,.35);margin-bottom:1.75rem;}
+.routes-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:2rem;
+}
+.route-item{
+  display:flex;align-items:center;gap:.6rem;
+  background:rgba(237,232,220,.04);border:1px solid rgba(237,232,220,.07);
+  border-radius:.6rem;padding:.6rem .85rem;
+  transition:background .2s,border-color .2s;
+  cursor:default;
+}
+.route-item:hover{background:rgba(37,211,102,.07);border-color:rgba(37,211,102,.2);}
+.route-method{
+  font-size:.6rem;font-weight:700;letter-spacing:.08em;padding:.2rem .45rem;
+  border-radius:.3rem;flex-shrink:0;
+}
+.method-post{background:rgba(255,107,43,.15);color:var(--orange)}
+.method-get{background:rgba(37,211,102,.15);color:var(--mint)}
+.route-path{font-size:.72rem;font-family:'DM Sans',monospace;color:rgba(237,232,220,.6)}
+
+/* ── RAG pipeline ── */
+.rag-section{margin-top:.25rem;}
+.rag-title{font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:rgba(237,232,220,.3);margin-bottom:1rem}
+.rag-flow{display:flex;align-items:center;gap:0;flex-wrap:nowrap;overflow-x:auto;padding-bottom:.5rem}
+.rag-node{
+  background:rgba(237,232,220,.05);border:1px solid rgba(237,232,220,.1);
+  border-radius:.75rem;padding:.6rem 1rem;font-size:.75rem;font-weight:600;
+  white-space:nowrap;flex-shrink:0;transition:background .2s,border-color .2s,transform .2s;
+  text-align:center;
+}
+.rag-node:hover{background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.3);transform:translateY(-2px)}
+.rag-node.highlight{background:rgba(37,211,102,.1);border-color:rgba(37,211,102,.3);color:var(--mint)}
+.rag-node.voice{background:rgba(201,186,238,.08);border-color:rgba(201,186,238,.2);color:var(--lav)}
+.rag-arrow{
+  color:rgba(237,232,220,.2);font-size:1rem;padding:0 .3rem;flex-shrink:0;
+}
+.rag-voice-row{display:flex;align-items:center;gap:0;margin-bottom:.6rem;}
+.voice-inject{font-size:.65rem;color:rgba(201,186,238,.5);padding:.3rem .5rem;flex-shrink:0}
+
+/* ────────────────────────────────
+   SERVICES SIDEBAR
+──────────────────────────────── */
+.services-col{display:flex;flex-direction:column;gap:.75rem}
+.svc-card{
+  padding:1rem 1.2rem;border-radius:1rem;
+  background:rgba(22,32,25,.6);border:1px solid rgba(237,232,220,.07);
+  transition:transform .2s,border-color .2s,box-shadow .2s;
+  cursor:default;
+}
+.svc-card:hover{transform:translateX(-3px);border-color:rgba(237,232,220,.15);box-shadow:inset 3px 0 0 var(--accent)}
+.svc-card[data-accent="mint"]{--accent:var(--mint)}
+.svc-card[data-accent="lav"]{--accent:var(--lav)}
+.svc-card[data-accent="orange"]{--accent:var(--orange)}
+.svc-card[data-accent="yellow"]{--accent:var(--yellow)}
+.svc-card[data-accent="blue"]{--accent:var(--blue)}
+.svc-name{font-size:.82rem;font-weight:700;margin-bottom:.2rem;display:flex;align-items:center;gap:.5rem}
+.svc-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.svc-desc{font-size:.7rem;color:rgba(237,232,220,.35);line-height:1.45}
+
+/* ────────────────────────────────
+   FRONTEND
+──────────────────────────────── */
+.frontend-box{
+  padding:2rem 2rem 2.25rem;
+  background:linear-gradient(135deg,rgba(201,186,238,.06),rgba(22,32,25,.9));
+  border:1px solid rgba(201,186,238,.15);
+  border-radius:1.5rem;
+  position:relative;overflow:hidden;
+}
+.frontend-box::before{
+  content:'';position:absolute;bottom:-60px;left:-60px;
+  width:250px;height:250px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,186,238,.06) 0%,transparent 70%);
+  pointer-events:none;
+}
+.frontend-title{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:800;
+  font-size:1.6rem;margin-bottom:.25rem;color:var(--cream);
+}
+.frontend-url{
+  font-size:.75rem;color:var(--lav);font-weight:500;
+  background:rgba(201,186,238,.08);border:1px solid rgba(201,186,238,.15);
+  border-radius:100px;padding:.2rem .7rem;display:inline-flex;align-items:center;gap:.35rem;
+  margin-bottom:1.75rem;
+}
+.pages-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+.page-card{
+  background:rgba(237,232,220,.04);border:1px solid rgba(237,232,220,.07);
+  border-radius:.75rem;padding:.85rem .9rem;
+  transition:background .2s,border-color .2s,transform .2s;cursor:default;
+}
+.page-card:hover{background:rgba(201,186,238,.08);border-color:rgba(201,186,238,.25);transform:translateY(-2px)}
+.page-name{font-size:.8rem;font-weight:700;margin-bottom:.3rem;color:var(--cream)}
+.page-desc{font-size:.68rem;color:rgba(237,232,220,.35);line-height:1.4}
+.i18n-row{
+  display:flex;align-items:center;gap:1rem;
+  background:rgba(237,232,220,.03);border:1px solid rgba(237,232,220,.07);
+  border-radius:.75rem;padding:.85rem 1.1rem;
+}
+.i18n-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(237,232,220,.3)}
+.lang-pills{display:flex;gap:.5rem;flex-wrap:wrap}
+.lang-pill{
+  font-size:.75rem;font-weight:600;padding:.3rem .7rem;border-radius:100px;
+  background:rgba(201,186,238,.1);border:1px solid rgba(201,186,238,.2);color:var(--lav);
+}
+.tech-row{display:flex;align-items:center;gap:.5rem;margin-top:.85rem;flex-wrap:wrap}
+.tech-tag{
+  font-size:.68rem;font-weight:600;padding:.25rem .65rem;border-radius:.4rem;
+  background:rgba(237,232,220,.05);border:1px solid rgba(237,232,220,.08);
+  color:rgba(237,232,220,.5);
+}
+
+/* ────────────────────────────────
+   DIVIDER WITH ARROW
+──────────────────────────────── */
+.layer-connector{
+  display:flex;align-items:center;justify-content:center;
+  gap:1rem;padding:1rem 0;
+}
+.conn-line{flex:1;height:1px;background:linear-gradient(to right,transparent,rgba(237,232,220,.08),transparent)}
+.conn-badge{
+  font-size:.65rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:rgba(237,232,220,.2);white-space:nowrap;display:flex;align-items:center;gap:.4rem;
+}
+.conn-arrow{font-size:.85rem;color:rgba(37,211,102,.4)}
+
+/* ────────────────────────────────
+   PRICING TIERS
+──────────────────────────────── */
+.tiers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.tier-card{
+  border-radius:1.25rem;padding:1.75rem 1.5rem;
+  background:rgba(22,32,25,.7);border:1px solid rgba(237,232,220,.07);
+  position:relative;overflow:hidden;
+  transition:transform .25s,box-shadow .25s;cursor:default;
+}
+.tier-card:hover{transform:translateY(-4px)}
+.tier-card::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;border-radius:1.25rem 0 0 1.25rem;
+}
+.tier-card.free::before{background:var(--cream)}
+.tier-card.starter::before{background:var(--mint)}
+.tier-card.growth::before{background:var(--lav)}
+.tier-card.enterprise::before{background:var(--orange)}
+.tier-card.free:hover{box-shadow:0 16px 48px rgba(237,232,220,.08)}
+.tier-card.starter:hover{box-shadow:0 16px 48px rgba(37,211,102,.12)}
+.tier-card.growth:hover{box-shadow:0 16px 48px rgba(201,186,238,.12)}
+.tier-card.enterprise:hover{box-shadow:0 16px 48px rgba(255,107,43,.12)}
+.tier-badge{font-size:.6rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.75rem;display:block}
+.tier-card.free .tier-badge{color:rgba(237,232,220,.4)}
+.tier-card.starter .tier-badge{color:var(--mint)}
+.tier-card.growth .tier-badge{color:var(--lav)}
+.tier-card.enterprise .tier-badge{color:var(--orange)}
+.tier-price{
+  font-family:'Fraunces',serif;font-style:italic;font-weight:900;
+  font-size:2rem;line-height:1;margin-bottom:.25rem;
+}
+.tier-period{font-size:.75rem;color:rgba(237,232,220,.3);margin-bottom:1.25rem;display:block}
+.tier-msgs{
+  font-size:.9rem;font-weight:700;margin-bottom:1rem;
+  padding:.5rem .75rem;border-radius:.5rem;background:rgba(237,232,220,.04);
+  display:inline-flex;align-items:center;gap:.4rem;
+}
+.tier-features{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.tier-features li{
+  font-size:.75rem;color:rgba(237,232,220,.5);
+  display:flex;align-items:center;gap:.5rem;line-height:1.3;
+}
+.tier-features li::before{
+  content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0;
+}
+.tier-card.free .tier-features li::before{background:rgba(237,232,220,.3)}
+.tier-card.starter .tier-features li::before{background:var(--mint)}
+.tier-card.growth .tier-features li::before{background:var(--lav)}
+.tier-card.enterprise .tier-features li::before{background:var(--orange)}
+
+/* ────────────────────────────────
+   LEGEND
+──────────────────────────────── */
+.legend{
+  display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;
+  padding:1.25rem 1.75rem;
+  background:rgba(237,232,220,.03);border:1px solid rgba(237,232,220,.06);
+  border-radius:.75rem;
+}
+.legend-item{display:flex;align-items:center;gap:.6rem;font-size:.75rem;color:rgba(237,232,220,.4)}
+.leg-line{width:28px;height:2px}
+.leg-line.solid{background:rgba(37,211,102,.5)}
+.leg-line.dashed{background:repeating-linear-gradient(to right,rgba(201,186,238,.5) 0,rgba(201,186,238,.5) 4px,transparent 4px,transparent 7px)}
+.leg-line.dotted{background:repeating-linear-gradient(to right,rgba(255,107,43,.5) 0,rgba(255,107,43,.5) 2px,transparent 2px,transparent 5px)}
+.leg-arrow{font-size:1rem;color:rgba(237,232,220,.3)}
+
+/* ────────────────────────────────
+   SPACING UTILS
+──────────────────────────────── */
+.mb1{margin-bottom:.75rem}
+.mb2{margin-bottom:1.25rem}
+.mb3{margin-bottom:2rem}
+.mb4{margin-bottom:3rem}
+.mt1{margin-top:.75rem}
+
+/* ── Section wrapper ── */
+.section{margin-bottom:1.5rem}
+
+/* ── Footer ── */
+.infographic-footer{
+  text-align:center;padding-top:3rem;
+  font-size:.75rem;color:rgba(237,232,220,.2);
+  border-top:1px solid rgba(237,232,220,.05);
+  margin-top:4rem;
+}
+.infographic-footer strong{color:var(--mint)}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header class="header">
+    <div class="pill mb2"><div class="pulse-dot"></div>full stack architecture</div>
+    <h1 class="header-logo">pather<span>le</span><span style="color:rgba(37,211,102,.4)">.</span></h1>
+    <p class="header-sub">multilingual ai for whatsapp &amp; telegram · built for indian businesses</p>
+  </header>
+
+  <!-- ── CHANNELS ── -->
+  <div class="section">
+    <span class="sec-label">01 — user channels</span>
+    <div class="channels-row">
+
+      <!-- WhatsApp -->
+      <div class="channel-card wa">
+        <div class="channel-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="channel-title">WhatsApp Business</div>
+          <div class="channel-tag">Meta Cloud API v21.0 · Phone ID: 1286635823359731</div>
+          <div class="channel-features">
+            <span class="ch-feat">text messages</span>
+            <span class="ch-feat">voice notes</span>
+            <span class="ch-feat">multi-tenant</span>
+          </div>
+        </div>
+        <div class="pill" style="flex-shrink:0"><div class="pulse-dot"></div>live</div>
+      </div>
+
+      <!-- Telegram -->
+      <div class="channel-card tg">
+        <div class="channel-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#2AABEE"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.96 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+        </div>
+        <div style="flex:1">
+          <div class="channel-title">Telegram Bot API</div>
+          <div class="channel-tag">Per-tenant bots · Webhook /webhook/telegram/:tenantId</div>
+          <div class="channel-features">
+            <span class="ch-feat">text messages</span>
+            <span class="ch-feat">voice notes</span>
+            <span class="ch-feat">setWebhook</span>
+          </div>
+        </div>
+        <div class="pill blue" style="flex-shrink:0"><div class="pulse-dot"></div>live</div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── CONNECTOR ── -->
+  <div class="layer-connector">
+    <div class="conn-line"></div>
+    <div class="conn-badge"><span class="conn-arrow">↓</span> HTTP webhooks · JSON payloads <span class="conn-arrow">↓</span></div>
+    <div class="conn-line"></div>
+  </div>
+
+  <!-- ── BACKEND + SERVICES ── -->
+  <div class="section">
+    <span class="sec-label">02 — backend · Express / Node.js</span>
+    <div class="backend-wrapper">
+
+      <!-- Backend box -->
+      <div class="backend-box">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.25rem">
+          <div>
+            <div class="backend-title">API Server</div>
+            <div class="backend-subtitle">Express.js · Node 18 · multi-tenant routing</div>
+          </div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+            <span class="pill"><div class="pulse-dot"></div>Node.js</span>
+            <span class="pill orange">Express</span>
+          </div>
+        </div>
+
+        <!-- Routes -->
+        <div class="routes-grid mt1">
+          <div class="route-item">
+            <span class="route-method method-post">POST</span>
+            <span class="route-path">/webhook/whatsapp</span>
+          </div>
+          <div class="route-item">
+            <span class="route-method method-post">POST</span>
+            <span class="route-path">/webhook/telegram/:tenantId</span>
+          </div>
+          <div class="route-item">
+            <span class="route-method method-post">POST</span>
+            <span class="route-path">/api/query</span>
+          </div>
+          <div class="route-item">
+            <span class="route-method method-get">GET</span>
+            <span class="route-path">/api/analytics/:tenantId</span>
+          </div>
+          <div class="route-item">
+            <span class="route-method method-post">POST</span>
+            <span class="route-path">/api/payments/order</span>
+          </div>
+          <div class="route-item">
+            <span class="route-method method-post">POST</span>
+            <span class="route-path">/api/documents/upload</span>
+          </div>
+        </div>
+
+        <!-- RAG pipeline -->
+        <div class="rag-section">
+          <div class="rag-title">RAG pipeline</div>
+
+          <!-- Voice path -->
+          <div class="rag-voice-row">
+            <div class="rag-node voice">🎙 Voice Note</div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-node voice">Whisper STT</div>
+            <span class="voice-inject">↘ injects as text</span>
+          </div>
+
+          <!-- Main pipeline -->
+          <div class="rag-flow">
+            <div class="rag-node highlight">User Message</div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-node">Embed<br/><span style="font-size:.62rem;color:rgba(237,232,220,.35);font-weight:400">BGE-m3</span></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-node">Pinecone<br/><span style="font-size:.62rem;color:rgba(237,232,220,.35);font-weight:400">top-k search</span></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-node">LLM<br/><span style="font-size:.62rem;color:rgba(237,232,220,.35);font-weight:400">Llama-3.1-8B</span></div>
+            <span class="rag-arrow">→</span>
+            <div class="rag-node highlight">Reply ✓</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services sidebar -->
+      <div class="services-col">
+        <span class="sec-label" style="margin-bottom:.75rem">03 — external services</span>
+
+        <div class="svc-card" data-accent="mint">
+          <div class="svc-name"><span class="svc-dot" style="background:var(--mint)"></span>Supabase</div>
+          <div class="svc-desc">PostgreSQL · tenants · documents · queries tables<br/>Auth (email + Google OAuth)</div>
+        </div>
+
+        <div class="svc-card" data-accent="lav">
+          <div class="svc-name"><span class="svc-dot" style="background:var(--lav)"></span>Pinecone</div>
+          <div class="svc-desc">Serverless · index "knowledge-base"<br/>1024 dims · cosine · AWS us-east-1</div>
+        </div>
+
+        <div class="svc-card" data-accent="yellow">
+          <div class="svc-name"><span class="svc-dot" style="background:var(--yellow)"></span>HuggingFace</div>
+          <div class="svc-desc">BGE-m3 embeddings · Llama-3.1-8B LLM<br/>Whisper STT · Inference API</div>
+        </div>
+
+        <div class="svc-card" data-accent="mint">
+          <div class="svc-name"><span class="svc-dot" style="background:var(--mint)"></span>Meta Graph API</div>
+          <div class="svc-desc">WhatsApp Cloud API v21.0<br/>WABA ID: 1286635823359731</div>
+        </div>
+
+        <div class="svc-card" data-accent="blue">
+          <div class="svc-name"><span class="svc-dot" style="background:var(--blue)"></span>Telegram Bot API</div>
+          <div class="svc-desc">Per-tenant bot tokens · setWebhook<br/>getFile for voice note download</div>
+        </div>
+
+        <div class="svc-card" data-accent="orange">
+          <div class="svc-name"><span class="svc-dot" style="background:var(--orange)"></span>Razorpay</div>
+          <div class="svc-desc">Card · UPI · HMAC-SHA256 verification</div>
+        </div>
+
+        <div class="svc-card" data-accent="yellow">
+          <div class="svc-name"><span class="svc-dot" style="background:var(--yellow)"></span>CoinDCX Pay</div>
+          <div class="svc-desc">Crypto · BTC · ETH · USDT · SOL<br/>Signed checkout · webhook confirm</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── CONNECTOR ── -->
+  <div class="layer-connector">
+    <div class="conn-line"></div>
+    <div class="conn-badge"><span class="conn-arrow">↓</span> REST API · Supabase Auth <span class="conn-arrow">↓</span></div>
+    <div class="conn-line"></div>
+  </div>
+
+  <!-- ── FRONTEND ── -->
+  <div class="section">
+    <span class="sec-label">04 — frontend · Vite + React · TailwindCSS v4</span>
+    <div class="frontend-box">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.25rem">
+        <div>
+          <div class="frontend-title">Dashboard App</div>
+          <span class="frontend-url">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="currentColor" stroke-width="1.2"/><path d="M5 1v4l2.5 1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+            patherle.vercel.app
+          </span>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap">
+          <span class="pill lav">Vite 7</span>
+          <span class="pill lav">React 18</span>
+          <span class="pill lav">Vercel</span>
+        </div>
+      </div>
+
+      <div class="pages-grid">
+        <div class="page-card">
+          <div class="page-name">🔐 Login</div>
+          <div class="page-desc">Supabase Auth · email/password · Google OAuth</div>
+        </div>
+        <div class="page-card">
+          <div class="page-name">🏢 Tenants</div>
+          <div class="page-desc">Manage workspaces · per-plan limits</div>
+        </div>
+        <div class="page-card">
+          <div class="page-name">📄 Documents</div>
+          <div class="page-desc">Upload · chunk · embed into Pinecone</div>
+        </div>
+        <div class="page-card">
+          <div class="page-name">💬 Query</div>
+          <div class="page-desc">Test RAG pipeline · real-time answers</div>
+        </div>
+        <div class="page-card">
+          <div class="page-name">📊 Analytics</div>
+          <div class="page-desc">Total queries · avg latency · lang breakdown · daily chart</div>
+        </div>
+        <div class="page-card">
+          <div class="page-name">💳 Billing</div>
+          <div class="page-desc">3-step checkout · Razorpay + CoinDCX Pay</div>
+        </div>
+        <div class="page-card">
+          <div class="page-name">🔌 Integrations</div>
+          <div class="page-desc">WhatsApp token · Telegram bot setup · one-click webhook</div>
+        </div>
+        <div class="page-card">
+          <div class="page-name">⬆ Upload</div>
+          <div class="page-desc">PDF · TXT · DOCX · knowledge base ingestion</div>
+        </div>
+      </div>
+
+      <div class="i18n-row">
+        <span class="i18n-label">i18n</span>
+        <div class="lang-pills">
+          <span class="lang-pill">EN English</span>
+          <span class="lang-pill">हिं Hindi</span>
+          <span class="lang-pill">ಕನ್ Kannada</span>
+          <span class="lang-pill" style="opacity:.4;font-size:.68rem">+ more soon</span>
+        </div>
+        <span style="margin-left:auto;font-size:.7rem;color:rgba(237,232,220,.25)">LangContext · localStorage persist</span>
+      </div>
+
+      <div class="tech-row">
+        <span class="tech-tag">AuthContext</span>
+        <span class="tech-tag">LangContext</span>
+        <span class="tech-tag">lucide-react</span>
+        <span class="tech-tag">TailwindCSS v4</span>
+        <span class="tech-tag">@supabase/supabase-js</span>
+        <span class="tech-tag">Razorpay checkout.js</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── CONNECTOR ── -->
+  <div class="layer-connector">
+    <div class="conn-line"></div>
+    <div class="conn-badge">pricing tiers</div>
+    <div class="conn-line"></div>
+  </div>
+
+  <!-- ── PRICING TIERS ── -->
+  <div class="section">
+    <span class="sec-label">05 — subscription tiers</span>
+    <div class="tiers-grid">
+
+      <div class="tier-card free">
+        <span class="tier-badge">Free</span>
+        <div class="tier-price" style="color:var(--cream)">₹0</div>
+        <span class="tier-period">forever free · no credit card</span>
+        <div class="tier-msgs" style="color:var(--cream)">🎁 50 messages / mo</div>
+        <ul class="tier-features">
+          <li>WhatsApp + Telegram</li>
+          <li>1 workspace</li>
+          <li>Basic RAG Q&amp;A</li>
+          <li>No credit card required</li>
+        </ul>
+      </div>
+
+      <div class="tier-card starter">
+        <span class="tier-badge">Starter</span>
+        <div class="tier-price" style="color:var(--mint)">₹999</div>
+        <span class="tier-period">per month</span>
+        <div class="tier-msgs" style="color:var(--mint)">💬 1,000 messages / mo</div>
+        <ul class="tier-features">
+          <li>Single channel (WA or TG)</li>
+          <li>1 workspace</li>
+          <li>Full RAG pipeline</li>
+          <li>Razorpay / CoinDCX</li>
+        </ul>
+      </div>
+
+      <div class="tier-card growth">
+        <span class="tier-badge">Growth</span>
+        <div class="tier-price" style="color:var(--lav)">₹2,999</div>
+        <span class="tier-period">per month</span>
+        <div class="tier-msgs" style="color:var(--lav)">💬 5,000 messages / mo</div>
+        <ul class="tier-features">
+          <li>Dual channel (WA + TG)</li>
+          <li>5 workspaces</li>
+          <li>Lead gen + scheduling</li>
+          <li>Standard analytics</li>
+        </ul>
+      </div>
+
+      <div class="tier-card enterprise">
+        <span class="tier-badge">Enterprise</span>
+        <div class="tier-price" style="color:var(--orange)">₹9,999</div>
+        <span class="tier-period">per month</span>
+        <div class="tier-msgs" style="color:var(--orange)">💬 25,000 messages / mo</div>
+        <ul class="tier-features">
+          <li>Omnichannel (WA + TG + more)</li>
+          <li>15 workspaces</li>
+          <li>Transaction layer</li>
+          <li>Advanced analytics</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── LEGEND ── -->
+  <div class="section">
+    <span class="sec-label">legend</span>
+    <div class="legend">
+      <div class="legend-item"><div class="leg-line solid"></div>API call (sync)</div>
+      <div class="legend-item"><div class="leg-line dashed"></div>data flow (async)</div>
+      <div class="legend-item"><div class="leg-line dotted"></div>webhook event</div>
+      <div class="legend-item"><span class="leg-arrow">⬆</span> document upload</div>
+      <div class="legend-item"><span class="leg-arrow">⟷</span> realtime sync</div>
+      <div class="legend-item">
+        <div class="pulse-dot" style="width:8px;height:8px;background:var(--mint);box-shadow:0 0 8px var(--mint);border-radius:50%;animation:pulse 2s ease-in-out infinite"></div>
+        live connection
+      </div>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer class="infographic-footer">
+    <strong>patherle.</strong> · multilingual ai for whatsapp &amp; telegram · mewdiaservice@gmail.com · patherle.vercel.app
+    <br/><span style="font-size:.65rem;opacity:.5;margin-top:.4rem;display:block">stack: Express · Supabase · Pinecone · HuggingFace · Razorpay · CoinDCX · Vite+React · Vercel</span>
+  </footer>
+
+</div>
+</body>
+</html>

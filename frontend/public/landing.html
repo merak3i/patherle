@@ -55,7 +55,9 @@
     .nav-logo {
       font-family:'Fraunces',serif; font-style:italic; font-weight:800;
       font-size:1.5rem; color:var(--cream); text-decoration:none; letter-spacing:-.02em;
+      display:flex; align-items:center; gap:.6rem;
     }
+    .nav-logo img { width:32px; height:32px; border-radius:7px; flex-shrink:0; }
     .nav-logo em { color:var(--mint); font-style:normal; }
     .nav-links { display:flex; align-items:center; gap:2rem; list-style:none; }
     .nav-links a {
@@ -533,7 +535,7 @@
 
 <!-- ─── NAV ─────────────────────────────────────────────── -->
 <nav id="nav">
-  <a href="#" class="nav-logo">Patherle<em>.</em></a>
+  <a href="#" class="nav-logo"><img src="/logo.svg" alt=""/>Patherle<em>.</em></a>
   <ul class="nav-links">
     <li><a href="#problem">why</a></li>
     <li><a href="#how">how it works</a></li>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" fill="#000"/>
+  <!-- Arrow 1 — back/left (tallest) -->
+  <polygon points="82,75 250,75 340,256 250,437 82,437 172,256" fill="#F2B705" stroke="#000" stroke-width="16" stroke-linejoin="round"/>
+  <!-- Arrow 2 — middle -->
+  <polygon points="175,112 335,112 424,256 335,400 175,400 264,256" fill="#F2B705" stroke="#000" stroke-width="16" stroke-linejoin="round"/>
+  <!-- Arrow 3 — front/right (shortest) -->
+  <polygon points="262,155 410,155 492,256 410,357 262,357 344,256" fill="#F2B705" stroke="#000" stroke-width="16" stroke-linejoin="round"/>
+</svg>
