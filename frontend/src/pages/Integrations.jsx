@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Copy, Check, ExternalLink, Zap, AlertCircle } from 'lucide-react'
+import { Copy, Check, ExternalLink, Zap, AlertCircle, Link2 } from 'lucide-react'
 import { supabase } from '../lib/supabase'
 import { useT } from '../lib/i18n'
 import { useLang } from '../context/LangContext'
@@ -36,11 +36,13 @@ export default function Integrations({ selectedTenant }) {
   const [waPhoneId, setWaPhoneId] = useState('')
   const [tgToken, setTgToken]     = useState('')
   const [tgUser, setTgUser]       = useState('')
+  const [botGreeting, setBotGreeting] = useState('')
   const [waSaved, setWaSaved]     = useState(false)
   const [tgSaved, setTgSaved]     = useState(false)
+  const [greetingSaved, setGreetingSaved] = useState(false)
   const [tgRegistered, setTgRegistered] = useState(false)
   const [registering, setRegistering]   = useState(false)
-  const [saving, setSaving]       = useState({ wa: false, tg: false })
+  const [saving, setSaving]       = useState({ wa: false, tg: false, greeting: false })
   const [copied, setCopied]       = useState('')
   const [tgWebhookInfo, setTgWebhookInfo] = useState(null)
 
@@ -51,7 +53,8 @@ export default function Integrations({ selectedTenant }) {
     setWaPhoneId(selectedTenant.whatsapp_phone_id || '')
     setTgToken(selectedTenant.telegram_bot_token || '')
     setTgUser(selectedTenant.telegram_bot_username || '')
-    setWaSaved(false); setTgSaved(false); setTgRegistered(false)
+    setBotGreeting(selectedTenant.bot_greeting || '')
+    setWaSaved(false); setTgSaved(false); setTgRegistered(false); setGreetingSaved(false)
   }, [selectedTenant?.id])
 
   const copy = (text, key) => {
@@ -63,6 +66,13 @@ export default function Integrations({ selectedTenant }) {
   const webhookUrl = selectedTenant
     ? `${API}/webhook/telegram/${selectedTenant.id}`
     : `${API}/webhook/telegram/{tenantId}`
+
+  const waNumber = selectedTenant?.whatsapp_number || ''
+  const tgUsername = (selectedTenant?.telegram_bot_username || '').replace(/^@/, '')
+  const waLink = waNumber
+    ? `https://wa.me/${waNumber.replace(/\D/g, '')}${botGreeting ? `?text=${encodeURIComponent(botGreeting)}` : ''}`
+    : ''
+  const tgLink = tgUsername ? `https://t.me/${tgUsername}` : ''
 
   const saveWA = async () => {
     if (!selectedTenant) return
@@ -80,6 +90,15 @@ export default function Integrations({ selectedTenant }) {
     setSaving(s => ({ ...s, tg: false }))
     setTgSaved(true)
     setTimeout(() => setTgSaved(false), 3000)
+  }
+
+  const saveGreeting = async () => {
+    if (!selectedTenant) return
+    setSaving(s => ({ ...s, greeting: true }))
+    await supabase.from('tenants').update({ bot_greeting: botGreeting }).eq('id', selectedTenant.id)
+    setSaving(s => ({ ...s, greeting: false }))
+    setGreetingSaved(true)
+    setTimeout(() => setGreetingSaved(false), 3000)
   }
 
   const registerTelegramWebhook = async () => {
@@ -209,6 +228,70 @@ export default function Integrations({ selectedTenant }) {
         )}
       </IntegrationCard>
 
+      {/* ── Bot Share Links ── */}
+      <IntegrationCard
+        logo={<Link2 size={22} color="#6C63FF" />}
+        title={ti.botLinks}
+        desc={ti.botLinksDesc}
+        color="#6C63FF"
+        docsUrl={null}
+        docsLabel={null}
+        connected={!!(waLink || tgLink)}
+      >
+        {/* Greeting text */}
+        <div>
+          <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 6 }}>
+            {ti.greeting}
+          </label>
+          <input
+            type="text"
+            className="field"
+            value={botGreeting}
+            onChange={e => setBotGreeting(e.target.value)}
+            placeholder={ti.greetingPlaceholder}
+            autoComplete="off"
+          />
+          <div style={{ fontSize: 11, color: 'var(--muted)', marginTop: 5 }}>
+            This text pre-fills the message box when customers open your WhatsApp link. Language is auto-detected from what they type.
+          </div>
+        </div>
+
+        {/* WA link */}
+        <ShareLinkRow
+          label={ti.waLink}
+          link={waLink}
+          placeholder={ti.noWaNumber}
+          copyKey="waLink"
+          copied={copied}
+          onCopy={copy}
+          color="#25D366"
+          icon={<WhatsAppLogo size={14} />}
+        />
+
+        {/* TG link */}
+        <ShareLinkRow
+          label={ti.tgLink}
+          link={tgLink}
+          placeholder={ti.noTgUsername}
+          copyKey="tgLink"
+          copied={copied}
+          onCopy={copy}
+          color="#29B6F6"
+          icon={<TelegramLogo size={14} />}
+        />
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginTop: 4 }}>
+          <button onClick={saveGreeting} disabled={saving.greeting} className="btn-lavender" style={{ padding: '9px 22px', fontSize: 13.5 }}>
+            {saving.greeting ? ti.savingGreeting : tc.save}
+          </button>
+          {greetingSaved && (
+            <span style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 12.5, color: '#2D7A4A', fontWeight: 600 }}>
+              <Check size={13} strokeWidth={2.5} /> {ti.greetingSaved}
+            </span>
+          )}
+        </div>
+      </IntegrationCard>
+
       {/* ── Usage note ── */}
       <div style={{ display: 'flex', gap: 10, padding: '14px 18px', background: 'rgba(201,186,238,0.15)', borderRadius: 14, border: '1.5px solid rgba(201,186,238,0.35)', fontSize: 13, color: 'var(--ink)', lineHeight: 1.5 }}>
         <AlertCircle size={18} color="var(--lavender-deep)" strokeWidth={2} style={{ flexShrink: 0, marginTop: 1 }} />
@@ -238,14 +321,42 @@ function IntegrationCard({ logo, title, desc, color, docsUrl, docsLabel, connect
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 5, fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 100, background: connected ? 'rgba(45,122,74,0.1)' : 'rgba(0,0,0,0.05)', color: connected ? '#2D7A4A' : 'var(--muted)' }}>
             <div style={{ width: 6, height: 6, borderRadius: '50%', background: connected ? '#2D7A4A' : 'var(--muted-light)' }} />
-            {connected ? 'Connected' : 'Not connected'}
+            {connected ? 'Ready' : 'Not set up'}
           </div>
-          <a href={docsUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11.5, color: 'var(--muted)', textDecoration: 'none', padding: '4px 10px', borderRadius: 100, border: '1.5px solid var(--border-dark)', transition: 'all 0.18s' }}>
-            <ExternalLink size={11} /> {docsLabel}
-          </a>
+          {docsUrl && (
+            <a href={docsUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 11.5, color: 'var(--muted)', textDecoration: 'none', padding: '4px 10px', borderRadius: 100, border: '1.5px solid var(--border-dark)', transition: 'all 0.18s' }}>
+              <ExternalLink size={11} /> {docsLabel}
+            </a>
+          )}
         </div>
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>{children}</div>
+    </div>
+  )
+}
+
+function ShareLinkRow({ label, link, placeholder, copyKey, copied, onCopy, color, icon }) {
+  return (
+    <div>
+      <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'block', marginBottom: 6 }}>
+        {label}
+      </label>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ flex: 1, padding: '9px 14px', background: link ? `${color}08` : 'rgba(22,32,25,0.04)', borderRadius: 10, border: `1.5px solid ${link ? color + '33' : 'var(--border)'}`, fontSize: 12, fontFamily: 'monospace', color: link ? 'var(--ink)' : 'var(--muted)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {link || placeholder}
+        </div>
+        {link && (
+          <>
+            <a href={link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', borderRadius: 100, border: `1.5px solid ${color}44`, background: `${color}10`, cursor: 'pointer', textDecoration: 'none', fontSize: 12, fontWeight: 500, color, whiteSpace: 'nowrap' }}>
+              {icon} Open
+            </a>
+            <button onClick={() => onCopy(link, copyKey)} style={{ display: 'flex', alignItems: 'center', gap: 5, padding: '8px 14px', borderRadius: 100, border: '1.5px solid var(--border-dark)', background: 'white', cursor: 'pointer', fontFamily: 'var(--font-body)', fontSize: 12, fontWeight: 500, color: copied === copyKey ? '#2D7A4A' : 'var(--muted)', transition: 'all 0.18s', whiteSpace: 'nowrap' }}>
+              {copied === copyKey ? <Check size={13} /> : <Copy size={13} />}
+              {copied === copyKey ? 'Copied!' : 'Copy'}
+            </button>
+          </>
+        )}
+      </div>
     </div>
   )
 }

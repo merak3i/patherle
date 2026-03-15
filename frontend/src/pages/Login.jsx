@@ -18,13 +18,20 @@ export default function Login() {
 
     try {
       if (mode === 'signup') {
-        const { error: err } = await supabase.auth.signUp({
+        const { data, error: err } = await supabase.auth.signUp({
           email,
           password,
-          options: { data: { name } },
+          options: {
+            data: { name },
+            emailRedirectTo: window.location.origin + '/app',
+          },
         })
         if (err) throw err
-        setSuccess('Check your email to confirm your account!')
+        // If email confirmation is disabled in Supabase, user is auto-logged in
+        if (data?.session) {
+          return // AuthContext picks up the session automatically
+        }
+        setSuccess('Check your email for a confirmation link, then sign in.')
       } else {
         const { error: err } = await supabase.auth.signInWithPassword({ email, password })
         if (err) throw err
@@ -40,7 +47,7 @@ export default function Login() {
     setError('')
     const { error: err } = await supabase.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: window.location.origin + '/app' },
     })
     if (err) setError(err.message)
   }
@@ -53,7 +60,8 @@ export default function Login() {
       <div style={{ width: '100%', maxWidth: 420 }}>
 
         {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 40 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 40 }}>
+          <img src="/logo.svg" alt="Patherle" style={{ width: 64, height: 64, borderRadius: 16, marginBottom: 14, display: 'block' }} />
           <div style={{
             fontFamily: 'var(--font-display)', fontSize: 36, fontStyle: 'italic',
             fontWeight: 700, color: 'var(--forest)', letterSpacing: '-0.04em', lineHeight: 1,
@@ -61,7 +69,7 @@ export default function Login() {
             Patherle
           </div>
           <div style={{ fontSize: 13, color: 'var(--muted)', marginTop: 6, letterSpacing: '0.03em' }}>
-            multilingual · whatsapp AI
+            multilingual AI · whatsapp & telegram
           </div>
         </div>
 
@@ -175,6 +183,15 @@ export default function Login() {
         <p style={{ textAlign: 'center', fontSize: 12, color: 'var(--muted)', marginTop: 20 }}>
           By signing up you agree to our Terms &amp; Privacy Policy
         </p>
+
+        <div style={{ textAlign: 'center', marginTop: 16 }}>
+          <a href="/" style={{ fontSize: 13, color: 'var(--forest)', textDecoration: 'none', fontWeight: 500, opacity: 0.75 }}
+            onMouseEnter={e => e.currentTarget.style.opacity = '1'}
+            onMouseLeave={e => e.currentTarget.style.opacity = '0.75'}
+          >
+            ← Back to home
+          </a>
+        </div>
       </div>
     </div>
   )

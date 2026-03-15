@@ -12,6 +12,7 @@ CREATE TABLE tenants (
   -- Telegram Bot API
   telegram_bot_token TEXT,
   telegram_bot_username TEXT,
+  bot_greeting TEXT,
   -- Plan & usage
   plan TEXT DEFAULT 'free',
   monthly_message_limit INTEGER DEFAULT 50,
@@ -24,9 +25,30 @@ ALTER TABLE tenants ADD COLUMN IF NOT EXISTS whatsapp_token TEXT;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS whatsapp_phone_id TEXT;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS telegram_bot_token TEXT;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS telegram_bot_username TEXT;
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS bot_greeting TEXT;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS plan TEXT DEFAULT 'free';
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS monthly_message_limit INTEGER DEFAULT 50;
 ALTER TABLE tenants ADD COLUMN IF NOT EXISTS messages_used INTEGER DEFAULT 0;
+-- Tier column (1=Starter, 2=Growth, 3=Enterprise) derived from plan but stored for fast filtering
+ALTER TABLE tenants ADD COLUMN IF NOT EXISTS plan_tier SMALLINT DEFAULT 1;
+
+-- ── Crawl Jobs table: tracks Cloudflare Browser Rendering crawl jobs ──────────
+-- Used by Tier 2 (one-time website auto-sync) and Tier 3 (recurring daily sync)
+CREATE TABLE IF NOT EXISTS tenant_crawl_jobs (
+  id            UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  tenant_id     UUID NOT NULL REFERENCES tenants(id) ON DELETE CASCADE,
+  url           TEXT NOT NULL,
+  cf_job_id     TEXT,                          -- Cloudflare-assigned job ID
+  status        TEXT NOT NULL DEFAULT 'pending', -- pending | processing | completed | failed
+  is_recurring  BOOLEAN NOT NULL DEFAULT FALSE,  -- TRUE for Tier 3 daily sync jobs
+  error         TEXT,                            -- error message if status = failed
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  completed_at  TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_crawl_jobs_tenant   ON tenant_crawl_jobs(tenant_id);
+CREATE INDEX IF NOT EXISTS idx_crawl_jobs_status   ON tenant_crawl_jobs(status);
+CREATE INDEX IF NOT EXISTS idx_crawl_jobs_recurring ON tenant_crawl_jobs(is_recurring) WHERE is_recurring = TRUE;
 
 -- Documents table: tracks uploaded knowledge base files
 CREATE TABLE documents (

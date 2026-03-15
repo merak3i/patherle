@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; font-size: 70%; }
+    html { scroll-behavior: smooth; }
     body {
       font-family: 'DM Sans', sans-serif;
       background: #0A0F0C;
@@ -527,17 +527,6 @@
       .ft-grid { grid-template-columns:1fr; }
       .lang-stats { grid-template-columns:1fr 1fr; }
     }
-
-    /* ── Wider horizontal padding (compensates for 70% font scale) ── */
-    nav { padding-left:3.5rem; padding-right:3.5rem; }
-    #hero { padding-left:7rem; padding-right:7rem; }
-    #problem,#how,#features,#languages,#pricing,#cta { padding-left:7rem; padding-right:7rem; }
-    footer { padding-left:7rem; padding-right:7rem; }
-    @media (max-width:900px) {
-      nav { padding-left:2rem; padding-right:2rem; }
-      #hero,#problem,#how,#features,#languages,#pricing,#cta { padding-left:3rem; padding-right:3rem; }
-      footer { padding-left:3rem; padding-right:3rem; }
-    }
   </style>
 </head>
 <body>
@@ -553,7 +542,7 @@
     <li><a href="#features">features</a></li>
     <li><a href="#pricing">pricing</a></li>
     <li><a href="#" onclick="openContact();return false;">contact</a></li>
-    <li><a href="/app" class="nav-cta">Sign In →</a></li>
+    <li><a href="/" class="nav-cta">open dashboard →</a></li>
   </ul>
 </nav>
 
@@ -566,7 +555,7 @@
   <div class="hero-left">
     <div class="hero-pill">
       <div class="pulse-dot"></div>
-      Live — Multilingual AI for WhatsApp & Telegram
+      live — multilingual ai for whatsapp & telegram
     </div>
 
     <h1 class="hero-h1">
@@ -576,11 +565,11 @@
     </h1>
 
     <p class="hero-sub">
-      Drop your knowledge base <em>(business information)</em>. Patherle handles every customer question — in Hindi, Kannada, or English. Text <em>or</em> voice. 24/7.
+      drop your knowledge base <em>(business information)</em>. patherle handles every customer question — in hindi, kannada, or english. text <em>or</em> voice. 24/7.
     </p>
 
     <div class="hero-ctas">
-      <a href="/app" class="btn-main">get started free →</a>
+      <a href="/" class="btn-main">get started free →</a>
       <a href="#how" class="btn-outline">see how it works ↓</a>
     </div>
 
@@ -592,7 +581,7 @@
         <div class="av" style="background:linear-gradient(135deg,#EDE8DC,#C9BAEE);color:#162019">AK</div>
         <div class="av" style="background:linear-gradient(135deg,#F5E53B,#FF6B2B)">PR</div>
       </div>
-      <p class="trust-txt"><strong>200+ businesses</strong> already using Patherle</p>
+      <p class="trust-txt"><strong>200+ businesses</strong> already using patherle</p>
     </div>
   </div>
 
@@ -606,7 +595,7 @@
             <div class="chat-ava">RS</div>
             <div>
               <div class="chat-nm">Rahul's Store 🛍️</div>
-              <div class="chat-st">Patherle AI · online</div>
+              <div class="chat-st">patherle ai · online</div>
             </div>
           </div>
           <div class="chat-body">
@@ -676,28 +665,28 @@
 <!-- ─── PROBLEM ───────────────────────────────────────────── -->
 <section id="problem">
   <span class="sec-label">the problem</span>
-  <h2 class="sec-h reveal">Your support team<br>is drowning 💀</h2>
-  <p class="sec-sub reveal">India has 600M+ vernacular internet users. They're texting in Hindi. In Kannada. In their language. Most businesses aren't ready.</p>
+  <h2 class="sec-h reveal">your support team<br>is drowning 💀</h2>
+  <p class="sec-sub reveal">india has 600M+ vernacular internet users. they're texting in hindi. in kannada. in their language. most businesses aren't ready.</p>
 
   <div class="p-cards">
     <div class="p-card reveal">
       <span class="p-emoji">📵</span>
       <div class="p-stat">400+<small>missed messages / week</small></div>
       <h3 class="p-title">ghosting your customers</h3>
-      <p class="p-desc">While your team sleeps, customers ask questions and get silence. Every unanswered message is a sale walking out the door.</p>
+      <p class="p-desc">while your team sleeps, customers ask questions and get silence. every unanswered message is a sale walking out the door.</p>
     </div>
     <div class="p-card reveal" style="transition-delay:.12s">
       <span class="p-emoji">🗣️</span>
       <div class="p-stat">70%<small>prefer their mother tongue</small></div>
       <h3 class="p-title">lost in translation</h3>
-      <p class="p-desc">Your English-only support can't talk to most of India. Language barriers aren't a nice-to-have fix — they're a revenue leak.</p>
+      <p class="p-desc">your english-only support can't talk to most of india. language barriers aren't a nice-to-have fix — they're a revenue leak.</p>
     </div>
     <div class="p-card reveal" style="transition-delay:.24s">
       <span class="p-emoji">🧑‍💼</span>
       <div class="p-stat">₹15k–45k<small>you're paying them every month</small></div>
-      <h3 class="p-title">Patherle replaces that.</h3>
-      <p class="p-desc">Front desk. Back office. The person answering the same 10 questions on repeat. ₹15,000 in a tier-3 city, ₹45,000 in Mumbai. Patherle does the same job — in 3 languages, at 2am, for a fraction of the cost.</p>
-      <p class="p-desc" style="margin-top:.875rem;opacity:.55;font-size:.8rem;font-style:italic;">PS: More languages are incoming. India, we hear you 🇮🇳</p>
+      <h3 class="p-title">patherle replaces that.</h3>
+      <p class="p-desc">front desk. back office. the person answering the same 10 questions on repeat. ₹15,000 in a tier-3 city, ₹45,000 in mumbai. patherle does the same job — in 3 languages, at 2am, for a fraction of the cost.</p>
+      <p class="p-desc" style="margin-top:.875rem;opacity:.55;font-size:.8rem;font-style:italic;">ps: more languages are incoming. india, we hear you 🇮🇳</p>
     </div>
   </div>
 </section>
@@ -705,8 +694,8 @@
 <!-- ─── HOW IT WORKS ──────────────────────────────────────── -->
 <section id="how">
   <span class="sec-label">how it works</span>
-  <h2 class="sec-h reveal">Three steps.<br><span style="color:var(--lav)">That's literally it.</span></h2>
-  <p class="sec-sub reveal">No code. No complex setup. Seriously.</p>
+  <h2 class="sec-h reveal">three steps.<br><span style="color:var(--lav)">that's literally it.</span></h2>
+  <p class="sec-sub reveal">no code. no complex setup. seriously.</p>
 
   <div class="how-grid">
     <div class="how-line"></div>
@@ -714,19 +703,19 @@
       <div class="how-num">01</div>
       <div class="how-icon" style="background:rgba(37,211,102,.1)">📄</div>
       <h3 class="how-title">drop your docs</h3>
-      <p class="how-desc">Upload your FAQs, product catalog, pricing, policies — anything customers ask about. PDFs and CSVs work out of the box.</p>
+      <p class="how-desc">upload your FAQs, product catalog, pricing, policies — anything customers ask about. PDFs and CSVs work out of the box.</p>
     </div>
     <div class="how-step reveal" style="transition-delay:.15s">
       <div class="how-num">02</div>
       <div class="how-icon" style="background:rgba(201,186,238,.1)">🧠</div>
-      <h3 class="how-title">AI learns everything</h3>
-      <p class="how-desc">Patherle reads, chunks, and embeds your docs into a vector knowledge base (business information store). It becomes an expert on your business. Instantly.</p>
+      <h3 class="how-title">ai learns everything</h3>
+      <p class="how-desc">patherle reads, chunks, and embeds your docs into a vector knowledge base (business information store). it becomes an expert on your business. instantly.</p>
     </div>
     <div class="how-step reveal" style="transition-delay:.3s">
       <div class="how-num">03</div>
       <div class="how-icon" style="background:rgba(255,107,43,.1)">💬</div>
       <h3 class="how-title">customers get answers</h3>
-      <p class="how-desc">When someone messages on WhatsApp, Patherle replies in seconds — in their language, with accurate answers pulled straight from your docs.</p>
+      <p class="how-desc">when someone messages on whatsapp, patherle replies in seconds — in their language, with accurate answers pulled straight from your docs.</p>
     </div>
   </div>
 </section>
@@ -734,14 +723,14 @@
 <!-- ─── FEATURES BENTO ────────────────────────────────────── -->
 <section id="features">
   <span class="sec-label">features</span>
-  <h2 class="sec-h reveal">Everything you need.<br><span style="color:var(--lav)">Nothing you don't.</span></h2>
-  <p class="sec-sub reveal">Built for real businesses, not enterprise boardrooms.</p>
+  <h2 class="sec-h reveal">everything you need.<br><span style="color:var(--lav)">nothing you don't.</span></h2>
+  <p class="sec-sub reveal">built for real businesses, not enterprise boardrooms.</p>
 
   <div class="bento">
     <div class="bc span2 reveal">
       <span class="bc-icon">🗣️</span>
       <h3 class="bc-title">speaks three languages — natively</h3>
-      <p class="bc-desc">Hindi, Kannada, English — Patherle auto-detects the language your customer writes in and responds in kind. No routing rules, no config, no headaches.</p>
+      <p class="bc-desc">hindi, kannada, english — patherle auto-detects the language your customer writes in and responds in kind. no routing rules, no config, no headaches.</p>
       <div class="bc-visual">
         <span class="bc-lang-chip">हिंदी</span>
         <span class="bc-lang-chip">ಕನ್ನಡ</span>
@@ -753,7 +742,7 @@
     <div class="bc reveal" style="transition-delay:.1s">
       <span class="bc-icon">🎤</span>
       <h3 class="bc-title">voice notes? understood.</h3>
-      <p class="bc-desc">Customer sends a voice note in Hindi — Patherle transcribes it with Whisper and answers instantly. No extra steps needed.</p>
+      <p class="bc-desc">customer sends a voice note in hindi — patherle transcribes it with whisper and answers instantly. no extra steps needed.</p>
     </div>
 
     <div class="bc reveal" style="transition-delay:.1s">
@@ -768,34 +757,34 @@
 
     <div class="bc reveal" style="transition-delay:.2s">
       <span class="bc-icon">🤖</span>
-      <h3 class="bc-title">Auto-reply on WhatsApp</h3>
-      <p class="bc-desc">Plugs directly into the WhatsApp Business API. Your number, your brand, Patherle's brain powering every reply.</p>
-      <span class="bc-tag">WhatsApp Business API</span>
+      <h3 class="bc-title">auto-reply on whatsapp</h3>
+      <p class="bc-desc">plugs directly into the whatsapp business api. your number, your brand, patherle's brain powering every reply.</p>
+      <span class="bc-tag">whatsapp business api</span>
     </div>
 
     <div class="bc reveal" style="transition-delay:.2s">
       <span class="bc-icon">🏢</span>
       <h3 class="bc-title">multi-tenant</h3>
-      <p class="bc-desc">Run multiple businesses from one dashboard. Each tenant has a completely isolated knowledge base and WhatsApp number.</p>
+      <p class="bc-desc">run multiple businesses from one dashboard. each tenant has a completely isolated knowledge base and whatsapp number.</p>
     </div>
 
     <div class="bc reveal" style="transition-delay:.3s">
       <span class="bc-icon">📊</span>
       <h3 class="bc-title">analytics</h3>
-      <p class="bc-desc">See which questions are trending, which docs get cited most, and where your knowledge base has gaps.</p>
+      <p class="bc-desc">see which questions are trending, which docs get cited most, and where your knowledge base has gaps.</p>
     </div>
 
     <div class="bc reveal" style="transition-delay:.4s">
       <span class="bc-icon">🎯</span>
       <h3 class="bc-title">lead generation</h3>
-      <p class="bc-desc">Before releasing high-value info, Patherle asks for name, email, and requirements — and saves it straight to your database. Your AI is now also your sales funnel.</p>
+      <p class="bc-desc">before releasing high-value info, patherle asks for name, email, and requirements — and saves it straight to your database. your ai is now also your sales funnel.</p>
       <span class="bc-tag">captures leads automatically</span>
     </div>
 
     <div class="bc span2 reveal" style="transition-delay:.4s">
       <span class="bc-icon">🛒</span>
       <h3 class="bc-title">sales & product showcase</h3>
-      <p class="bc-desc">Inject your product catalog, exact pricing, and payment links into the knowledge base (business information). Patherle retrieves and presents them like a trained sales agent — your best rep, available 24/7.</p>
+      <p class="bc-desc">inject your product catalog, exact pricing, and payment links into the knowledge base (business information). patherle retrieves and presents them like a trained sales agent — your best rep, available 24/7.</p>
       <div class="bc-visual">
         <span class="bc-lang-chip">product catalog</span>
         <span class="bc-lang-chip">live pricing</span>
@@ -806,14 +795,14 @@
     <div class="bc span2 reveal" style="transition-delay:.5s">
       <span class="bc-icon">📅</span>
       <h3 class="bc-title">appointment booking</h3>
-      <p class="bc-desc">Embed your scheduling link (Calendly, Cal.com, or custom). Patherle detects booking intent in any language and drops the link — no human needed to schedule a single call.</p>
+      <p class="bc-desc">embed your scheduling link (calendly, cal.com, or custom). patherle detects booking intent in any language and drops the link — no human needed to schedule a single call.</p>
       <span class="bc-tag">booking intent detection</span>
     </div>
 
     <div class="bc reveal" style="transition-delay:.5s">
       <span class="bc-icon">🔒</span>
       <h3 class="bc-title">gated information</h3>
-      <p class="bc-desc">Premium info stays locked behind a lead form. Patherle collects contact details before revealing pricing tiers, exclusive offers, or detailed specs.</p>
+      <p class="bc-desc">premium info stays locked behind a lead form. patherle collects contact details before revealing pricing tiers, exclusive offers, or detailed specs.</p>
     </div>
   </div>
 </section>
@@ -821,7 +810,7 @@
 <!-- ─── LANGUAGE SHOWCASE ─────────────────────────────────── -->
 <section id="languages">
   <span class="sec-label">live demo</span>
-  <h2 class="sec-h reveal">Same question.<br><em>Three languages.</em></h2>
+  <h2 class="sec-h reveal">same question.<br><em>three languages.</em></h2>
 
   <div class="lang-layout">
     <div class="reveal-l">
@@ -835,7 +824,7 @@
         <div class="lc-inner">
           <div class="lc-q">customer asks:</div>
           <div class="lc-msg">What's your return policy?</div>
-          <div class="lc-a">Patherle replies:</div>
+          <div class="lc-a">patherle replies:</div>
           <div class="lc-ans">Our return policy is 30 days from the purchase date. Just send us your order ID and we'll process it within 24 hours — no questions asked! 😊</div>
         </div>
       </div>
@@ -844,7 +833,7 @@
         <div class="lc-inner">
           <div class="lc-q">customer asks:</div>
           <div class="lc-msg">रिटर्न पॉलिसी क्या है?</div>
-          <div class="lc-a">Patherle replies:</div>
+          <div class="lc-a">patherle replies:</div>
           <div class="lc-ans">हमारी रिटर्न पॉलिसी खरीद की तारीख से 30 दिन की है। बस अपना ऑर्डर ID भेजें, हम 24 घंटे में प्रोसेस करेंगे! 😊</div>
         </div>
       </div>
@@ -853,7 +842,7 @@
         <div class="lc-inner">
           <div class="lc-q">customer asks:</div>
           <div class="lc-msg">ರಿಟರ್ನ್ ಪಾಲಿಸಿ ಏನು?</div>
-          <div class="lc-a">Patherle replies:</div>
+          <div class="lc-a">patherle replies:</div>
           <div class="lc-ans">ನಮ್ಮ ರಿಟರ್ನ್ ಪಾಲಿಸಿ ಖರೀದಿ ದಿನಾಂಕದಿಂದ 30 ದಿನಗಳು. ನಿಮ್ಮ ಆರ್ಡರ್ ID ಕಳುಹಿಸಿ, 24 ಗಂಟೆಯಲ್ಲಿ ಪ್ರಕ್ರಿಯೆ ಮಾಡುತ್ತೇವೆ! 😊</div>
         </div>
       </div>
@@ -863,19 +852,19 @@
       <div class="lang-stats">
         <div class="ls">
           <div class="ls-n">3</div>
-          <div class="ls-l">Languages supported out of the box</div>
+          <div class="ls-l">languages supported out of the box</div>
         </div>
         <div class="ls" style="background:var(--ink);color:var(--cream);box-shadow:4px 4px 0 var(--lav)">
           <div class="ls-n" style="color:var(--mint)">&lt;2s</div>
-          <div class="ls-l" style="color:rgba(237,232,220,.55)">Avg. response time</div>
+          <div class="ls-l" style="color:rgba(237,232,220,.55)">avg response time</div>
         </div>
         <div class="ls" style="background:var(--lav);box-shadow:4px 4px 0 var(--ink)">
           <div class="ls-n">600M+</div>
-          <div class="ls-l">Vernacular internet users in India</div>
+          <div class="ls-l">vernacular internet users in india</div>
         </div>
         <div class="ls" style="background:var(--forest);color:var(--cream);box-shadow:4px 4px 0 var(--lav)">
           <div class="ls-n" style="color:var(--cream)">24/7</div>
-          <div class="ls-l" style="color:rgba(237,232,220,.5)">Never sleeps. Never calls in sick.</div>
+          <div class="ls-l" style="color:rgba(237,232,220,.5)">never sleeps. never calls in sick.</div>
         </div>
       </div>
     </div>
@@ -885,8 +874,8 @@
 <!-- ─── PRICING ───────────────────────────────────────────── -->
 <section id="pricing">
   <span class="sec-label">pricing</span>
-  <h2 class="sec-h reveal">Honest pricing.<br><span style="color:var(--lav)">No surprises.</span></h2>
-  <p class="sec-sub reveal">Three tiers. One goal — replace the employee you're overpaying.</p>
+  <h2 class="sec-h reveal">honest pricing.<br><span style="color:var(--lav)">no surprises.</span></h2>
+  <p class="sec-sub reveal">three tiers. one goal — replace the employee you're overpaying.</p>
 
   <!-- Free tier pill -->
   <div class="reveal" style="margin-top:2.5rem;display:flex;align-items:center;justify-content:center;gap:1.5rem;padding:1.25rem 2rem;background:rgba(237,232,220,0.05);border:1.5px solid rgba(237,232,220,0.12);border-radius:18px;flex-wrap:wrap;text-align:center;">
@@ -904,7 +893,7 @@
       <svg width="22" height="22" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#29B6F6"/><path d="M5.491 11.74L18.661 6.28c.632-.24 1.185.155.98.943l-2.21 10.38c-.163.762-.633.944-1.282.588l-3.545-2.613-1.71 1.643c-.19.183-.35.337-.716.337l.256-3.61 6.572-5.936c.286-.254-.062-.395-.443-.141L7.83 13.928l-3.397-1.064c-.736-.233-.752-.737.32-1.124z" fill="white"/></svg>
       <span style="font-size:.88rem;color:rgba(237,232,220,.55);">available on both channels</span>
     </div>
-    <a href="/app" style="display:inline-block;padding:.6rem 1.5rem;border-radius:100px;background:var(--lav);color:var(--forest);font-weight:700;font-size:.88rem;text-decoration:none;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">Try free →</a>
+    <a href="/" style="display:inline-block;padding:.6rem 1.5rem;border-radius:100px;background:var(--lav);color:var(--forest);font-weight:700;font-size:.88rem;text-decoration:none;transition:all .2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='none'">try free →</a>
   </div>
 
   <div class="price-grid" style="margin-top:2rem;">
@@ -918,11 +907,11 @@
         <li>1,000 messages / month</li>
         <li>1 isolated business workspace</li>
         <li>WhatsApp <em>or</em> Telegram (single channel)</li>
-        <li>Manual PDF &amp; CSV uploads only</li>
+        <li>PDF, CSV, URL scraping, API sync</li>
         <li>RAG engine · English, Hindi, Kannada</li>
         <li>Multilingual product &amp; price showcase</li>
       </ul>
-      <a href="/app" class="pc-btn">get started →</a>
+      <a href="/" class="pc-btn">get started →</a>
     </div>
 
     <!-- Tier 2: Growth -->
@@ -934,15 +923,14 @@
       <ul class="pc-list">
         <li>5,000 messages / month</li>
         <li>Up to 5 isolated sub-accounts</li>
-        <li>WhatsApp + Telegram + Web Chat Bot</li>
-        <li>PDF &amp; CSV uploads</li>
-        <li>⚡ Instant Website Auto-Sync (one-time setup)</li>
+        <li>WhatsApp <em>+</em> Telegram (dual, simultaneous)</li>
+        <li>PDF, CSV, URL scraping, API sync</li>
         <li>RAG engine · English, Hindi, Kannada</li>
         <li>Lead gen — name &amp; email capture</li>
         <li>Appointment scheduling module</li>
         <li>Standard interaction analytics</li>
       </ul>
-      <a href="/app" class="pc-btn">start growth plan →</a>
+      <a href="/" class="pc-btn">start growth plan →</a>
     </div>
 
     <!-- Tier 3: Enterprise -->
@@ -953,17 +941,15 @@
       <ul class="pc-list" style="color:rgba(237,232,220,.7)">
         <li>25,000 messages / month</li>
         <li>Up to 15 isolated sub-accounts</li>
-        <li>Omnichannel — WhatsApp + Telegram + Web Chat Bot</li>
-        <li>PDF &amp; CSV uploads</li>
-        <li>🔄 Continuous Real-Time Sync (daily crawl)</li>
-        <li>Supplier &amp; competitor shadow tracking</li>
+        <li>Omnichannel deployment</li>
+        <li>PDF, CSV, URL scraping, API sync</li>
         <li>RAG engine · English, Hindi, Kannada</li>
         <li>Lead gen — name &amp; email capture</li>
         <li>Appointment scheduling module</li>
         <li>In-chat payment links (Razorpay + Crypto)</li>
         <li>Advanced lead &amp; conversion analytics</li>
       </ul>
-      <a href="/app" class="pc-btn">start enterprise plan →</a>
+      <a href="/" class="pc-btn">start enterprise plan →</a>
     </div>
   </div>
 </section>
@@ -972,16 +958,16 @@
 <section id="cta">
   <div class="cta-bg-word">patherle</div>
   <div class="cta-inner">
-    <div class="cta-badge reveal"><div class="pulse-dot"></div>Set up in under 10 minutes</div>
+    <div class="cta-badge reveal"><div class="pulse-dot"></div>set up in under 10 minutes</div>
     <h2 class="cta-h reveal">
-      Stop making your<br>customers <span class="c-mint">wait.</span>
+      stop making your<br>customers <span class="c-mint">wait.</span>
     </h2>
-    <p class="cta-sub reveal">No code. No complexity. Just drop your docs and go.</p>
-    <a href="/app" class="btn-wa reveal">
+    <p class="cta-sub reveal">no code. no complexity. just drop your docs and go.</p>
+    <a href="/" class="btn-wa reveal">
       <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Start for free
+      start for free
     </a>
-    <p class="cta-footnote reveal">50 free messages. No nonsense. Just Patherle.</p>
+    <p class="cta-footnote reveal">50 free messages. no nonsense. just patherle.</p>
   </div>
 </section>
 
@@ -990,7 +976,7 @@
   <div class="ft-grid">
     <div>
       <a href="#" class="ft-logo">Patherle.</a>
-      <p class="ft-tag">Multilingual AI for WhatsApp & Telegram. Built for Indian businesses. Powered by real AI.</p>
+      <p class="ft-tag">multilingual ai for whatsapp & telegram. built for indian businesses. powered by real ai.</p>
     </div>
     <div>
       <div class="ft-col-h">Product</div>
@@ -998,7 +984,7 @@
         <li><a href="#how">how it works</a></li>
         <li><a href="#features">features</a></li>
         <li><a href="#pricing">pricing</a></li>
-        <li><a href="/app">dashboard</a></li>
+        <li><a href="/">dashboard</a></li>
       </ul>
     </div>
     <div>
@@ -1007,7 +993,7 @@
         <li><a href="#">Hindi (हिंदी)</a></li>
         <li><a href="#">Kannada (ಕನ್ನಡ)</a></li>
         <li><a href="#">English</a></li>
-        <li><a href="#" style="color:rgba(237,232,220,.25)">More coming soon</a></li>
+        <li><a href="#" style="color:rgba(237,232,220,.25)">more coming soon</a></li>
       </ul>
     </div>
     <div>
